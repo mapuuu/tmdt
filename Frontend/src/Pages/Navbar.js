@@ -10,7 +10,9 @@ const Navbar = () => {
   return (
     <div className="w-full">
       <div className="flex w-5/6 mx-auto items-center justify-between py-8">
-        <Logo />
+        <Link to="/">
+          <Logo />
+        </Link>
         {/* <div className="flex justify-between items-center w-2/5  text-xl border rounded-full h-full">
           <div className="w-[85%] ml-[2rem] flex justify-between items-center">
             <input

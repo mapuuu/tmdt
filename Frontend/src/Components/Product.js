@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import ProductDescription from './ProductDescription';
 
 const Product = ({ products }) => {
-
     const truncateDescription = (description, maxLength) => {
         if (description.length > maxLength) {
             return description.substring(0, maxLength) + '...';
@@ -14,24 +13,18 @@ const Product = ({ products }) => {
         return description;
     };
 
-    const productsPerRow = 6; // Number of products per row
-
-    // Split products into rows
-    const rows = [];
-    for (let i = 0; i < products.length; i += productsPerRow) {
-        rows.push(products.slice(i, i + productsPerRow));
-    }
+    const productsPerRow = 5; // Number of products per row
 
     return (
-        <div>
-            {rows.map((products, rowIndex) => (
-                <div key={rowIndex} className="flex justify-between mt-4">
-                    {products.map((product) => (
-                        <div key={product._id} className="border rounded w-[280px]">
+        <div className="overflow-x-auto"> {/* Scrollable container */}
+            <div className="flex mt-4">
+                {products.map((product) => (
+                    <div key={product._id} className="border rounded w-[280px] mr-5">
+                        <Link to={`/product_detail/${product._id}`}>
                             <div className="bg-gray-200 w-[250px] h-[250px] rounded mx-auto my-[15px]">
-                                <Link to={`/product_detail/${product._id}`}>
-                                    <img src={product.images} alt="" style={{ height: '250px', width: '100%' }} />
-                                </Link>
+
+                                <img src={product.images} alt="" style={{ height: '250px', width: '100%' }} />
+
                             </div>
                             <div className="flex w-[250px] mx-auto justify-between">
 
@@ -47,7 +40,7 @@ const Product = ({ products }) => {
 
                                 {/* <p className="text-xs"></p> */}
                                 <div className="flex">
-                                    <p>{product.sold} </p> solds
+                                    <p>Số lượng {product.quantity}</p>
                                 </div>
                             </div>
                             <div className="flex items-center w-[250px] mx-auto justify-between">
@@ -64,10 +57,10 @@ const Product = ({ products }) => {
                                     <BiCartAlt className="text-3xl hover:text-black" />
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            ))}
+                        </Link>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

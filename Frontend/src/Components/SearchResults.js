@@ -1,10 +1,11 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
-const SearchResults = ({ searchResults, setQueryText }) => {
+const SearchResults = ({ searchResults, setQueryText, handleResultClick }) => {
 
-    const handleResultClick = (name) => {
-        setQueryText(name); // Cập nhật giá trị trong input
-    };
+    // const handleResultClick = (name) => {
+    //     setQueryText(name); // Cập nhật giá trị trong input
+    // };
 
     return (
         <div>
@@ -22,12 +23,15 @@ const SearchResults = ({ searchResults, setQueryText }) => {
                         }}
                         key={_id}
                         className="p-2 hover:bg-teal-500 hover:text-white cursor-pointer"
-                        onClick={() => handleResultClick(name)}
+                        onClick={() => handleResultClick(_id)}
                     >
                         <div align='start'>
+                            {/* <Link to={`/product_detail/${_id}`}> */}
+
                             <p>{name}</p>
                             {/* <p>{numberOfReviews}</p>
                             <p>{rate}</p> */}
+                            {/* </Link> */}
                         </div>
                     </div>
                 ))

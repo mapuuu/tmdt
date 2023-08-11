@@ -4,6 +4,7 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import { TiDeleteOutline } from 'react-icons/ti'
 import { Hint } from 'react-autocomplete-hint';
 import SearchResults from './SearchResults';
+import { useNavigate } from 'react-router-dom';
 
 const Search = () => {
 
@@ -30,8 +31,6 @@ const Search = () => {
 
                     setSearchResults(response.data);
 
-
-
                     if (response.data.length > 0) {
                         const firstProductName = response.data[0].name;
                         console.log(response.data[0]._id)
@@ -43,6 +42,15 @@ const Search = () => {
             })();
         }
     }, [queryText]);
+
+    const navigate = useNavigate()
+
+    const handleResultClick = (productId) => {
+        setQueryText(''); // Reset giá trị input
+        setSearchResults([]); // Xóa kết quả tìm kiếm
+        // Chuyển đến trang ProductDetail với ID sản phẩm được chọn
+        navigate(`/product_detail/${productId}`);
+    };
 
     return (
         <div style={{
@@ -80,7 +88,7 @@ const Search = () => {
                 <div className="max-h-70vh p-0 overflow-y-auto absolute top-[130px] z-5 bg-gray-300 ">
                     <div className="px-4">
                         <ul className="border-t-1 border-gray-300 pt-2 pb-4 ">
-                            <SearchResults searchResults={searchResults} setQueryText={setQueryText} />
+                            <SearchResults searchResults={searchResults} handleResultClick={handleResultClick} />
                         </ul>
                     </div>
                 </div>
