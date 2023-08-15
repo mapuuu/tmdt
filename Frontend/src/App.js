@@ -10,18 +10,22 @@ import Shopping from './Components/Shopping.js';
 
 const App = () => {
   return (
-    <>
+    <div className="min-h-screen flex flex-col" style={{
+      position: "relative",
+      /* Các thuộc tính CSS khác cho thanh điều hướng */
+    }}>
       <Navbar />
-      <Routes>
-        {/* <Route path="/" element={<Navbar />}></Route> */}
-        <Route path="/login" element={<Login />}></Route>
-        <Route path="/register" element={<Register />}></Route>
-        <Route path="/shopping" element={<Shopping />}></Route>
-        <Route path="/product_detail/:id" element={<ProductDetail />}></Route>
-        <Route path="/" element={<Home />}></Route>
-      </Routes>
+      <div className="flex-grow">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/shopping" element={<Shopping />} />
+          <Route path="/product_detail/:id" element={<ProductDetail />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

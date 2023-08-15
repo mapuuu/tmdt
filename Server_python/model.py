@@ -31,7 +31,7 @@ class Model:
     #     return class_names[np.argmax(prediction)]
     
     def predict(self, image):
-        self.model = load_model('./train_model.h5')
+        self.model = load_model('D:\\Document\\PTIT\\e-commerce\\Server_python\\train_model.h5')
         
         img = cv2.resize(image, (256, 256))
 

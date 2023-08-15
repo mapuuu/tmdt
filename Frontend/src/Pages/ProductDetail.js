@@ -5,6 +5,8 @@ import ProductDescription from '../Components/ProductDescription';
 import { BiChevronRight } from 'react-icons/bi';
 import Comment from '../Components/Comment';
 import Recommed from '../Components/Recommed';
+import SubCate from '../Components/SubCate';
+import { animateScroll as scroll } from 'react-scroll';
 
 const ProductDetail = ({ }) => {
 
@@ -13,29 +15,40 @@ const ProductDetail = ({ }) => {
 
     const [comments, setComments] = useState(null);
 
+    const [subCategories, setSubCategories] = useState(null);
+
     // console.log(id)
 
     const effectRan = useRef(false)
     useEffect(() => {
-        if (effectRan.current === false) {
-            const fetchProduct = async () => {
-                try {
-                    console.log(id)
-                    const response = await axios.get(`http://localhost:4000/v4/product/${id}/getProductById`);
-                    setProduct(response.data); // Assuming the API response is the product object
-                    setComments(response.data.comments)
-                } catch (error) {
-                    console.error('Error fetching product:', error);
-                }
-            };
-            fetchProduct();
-            return () => {
-                effectRan.current = true;
+        // if (effectRan.current === false) {
+        const fetchProduct = async () => {
+            try {
+                console.log(id)
+                const response = await axios.get(`http://localhost:4000/v4/product/${id}/getProductById`);
+                setProduct(response.data); // Assuming the API response is the product object
+                setComments(response.data.comments)
+                setSubCategories(response.data.sub_categories)
+            } catch (error) {
+                console.error('Error fetching product:', error);
             }
-        }
-    }, [id]);
+        };
+        fetchProduct();
+        // return () => {
+        //     effectRan.current = true;
+        // }
+    }
+        , [id]);
 
-    console.log(comments)
+    console.log(subCategories)
+
+    const handleNextClick = () => {
+        window.scrollTo(0, 0); // Scroll to the top of the page
+    };
+
+    function formatNumberWithCommas(number) {
+        return new Intl.NumberFormat('en-US').format(number);
+    }
 
     if (!product) {
         return <p>Loading...</p>;
@@ -59,7 +72,7 @@ const ProductDetail = ({ }) => {
 
                         <div className="mt-4 lg:row-span-3 lg:mt-0">
                             <h2 className="sr-only">Product information</h2>
-                            <p className="text-3xl tracking-tight text-gray-900">{product.price}VNĐ</p>
+                            <p className="text-3xl tracking-tight text-gray-900">{formatNumberWithCommas(product.price)} VNĐ</p>
 
                             <div className="mt-6">
                                 <h3 className="sr-only">Reviews</h3>
@@ -87,7 +100,7 @@ const ProductDetail = ({ }) => {
                                 </div>
                             </div>
 
-                            <form className="mt-10">
+                            {/* <form className="mt-10">
                                 <div>
                                     <h3 className="text-sm font-medium text-gray-900">Color</h3>
 
@@ -141,7 +154,10 @@ const ProductDetail = ({ }) => {
                                 </div>
 
                                 <button type="submit" className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Add to bag</button>
-                            </form>
+                            </form> */}
+
+                            <SubCate subCategories={subCategories} />
+
                         </div>
 
                         <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
@@ -208,10 +224,11 @@ const ProductDetail = ({ }) => {
                     </div>
                 </div>
 
-
             </div>
 
-            <Recommed products={product} />
+            <div onClick={handleNextClick}>
+                <Recommed products={product} />
+            </div>
         </>
     )
 }

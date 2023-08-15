@@ -13,6 +13,10 @@ const Product = ({ products }) => {
         return description;
     };
 
+    function formatNumberWithCommas(number) {
+        return new Intl.NumberFormat('en-US').format(number);
+    }
+
     const productsPerRow = 5; // Number of products per row
 
     return (
@@ -44,7 +48,7 @@ const Product = ({ products }) => {
                                 </div>
                             </div>
                             <div className="flex items-center w-[250px] mx-auto justify-between">
-                                <p className="font-semibold text-xl">{product.price}</p>
+                                <p className="font-semibold text-xl">{formatNumberWithCommas(product.price)}</p>
                                 <div className="flex justify-center items-center border rounded-md p-[5px] mb-[15px]">
                                     <p>Buy now</p>
                                 </div>

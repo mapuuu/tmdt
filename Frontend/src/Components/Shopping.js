@@ -10,6 +10,15 @@ const Shopping = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
+    // Lấy trạng thái currentPage từ localStorage khi load trang
+    useEffect(() => {
+        const storedPage = localStorage.getItem('shoppingCurrentPage');
+        if (storedPage) {
+            setCurrentPage(parseInt(storedPage));
+        }
+        fetchProducts(currentPage);
+    }, []);
+
     useEffect(() => {
         fetchProducts(currentPage);
     }, [currentPage]);
@@ -17,7 +26,6 @@ const Shopping = () => {
     const fetchProducts = async (page) => {
         try {
             const response = await axios.get(`http://localhost:4000/v4/product/getAllProducts?page=${page}`);
-            console.log(response.data)
             setProducts(response.data.products);
             setTotalPages(response.data.pages);
         } catch (error) {
@@ -25,9 +33,9 @@ const Shopping = () => {
         }
     };
 
-
-
     const handlePageChange = (newPage) => {
+        // Lưu trạng thái currentPage vào localStorage
+        localStorage.setItem('shoppingCurrentPage', newPage.toString());
         setCurrentPage(newPage);
     };
 

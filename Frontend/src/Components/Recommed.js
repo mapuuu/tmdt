@@ -4,6 +4,7 @@ import Product from './Product'
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
+
 const Recommed = () => {
     const { id } = useParams();
     const [recomend, setRecommend] = useState([]);

@@ -52,13 +52,18 @@ const Search = () => {
         navigate(`/product_detail/${productId}`);
     };
 
+    const handleClearClick = () => {
+        setQueryText(''); // Xóa nội dung ô input
+        setSearchResults([]); // Xóa kết quả tìm kiếm
+    };
+
     return (
         <div style={{
             flexDirection: 'column', // Hiển thị các phần tử thẳng hàng
             width: '600px'
         }}
             className="flex flex-col rounded-lg overflow-hidden shadow-lg max-w-600px w-90 mt-1rem mx-auto">
-            <div className="relative flex items-stretch h-70">
+            {/* <div className="relative flex items-stretch h-70">
                 <Hint options={firstProductNameArray}>
                     <input
                         style={{
@@ -83,7 +88,7 @@ const Search = () => {
                         onChange={handleChange}
                     />
                 </Hint>
-            </div>
+            </div> */}
             {queryText && (
                 <div className="max-h-70vh p-0 overflow-y-auto absolute top-[130px] z-5 bg-gray-300 ">
                     <div className="px-4">
@@ -93,6 +98,39 @@ const Search = () => {
                     </div>
                 </div>
             )}
+
+            <div className="relative">
+                <Hint options={firstProductNameArray}>
+                    <input
+                        className="appearance-none border-2 px-10 h-[68px] border-gray-300 hover:border-gray-400 transition-colors rounded-md w-full py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:ring-purple-600 focus:border-purple-600 focus:shadow-outline"
+                        id="username"
+                        type=""
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck="false"
+                        placeholder="Search..."
+                        value={queryText}
+                        onChange={handleChange}
+                    />
+                </Hint>
+                <div className="absolute right-0 inset-y-0 flex items-center" onClick={handleClearClick}>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="-ml-1 mr-3 h-5 w-5 text-gray-400 hover:text-gray-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M6 18L18 6M6 6l12 12"
+                        />
+                    </svg>
+                </div>
+
+            </div>
         </div>
 
     )

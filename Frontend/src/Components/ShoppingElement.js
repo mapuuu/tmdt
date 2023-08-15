@@ -22,6 +22,9 @@ const ShoppingElement = ({ products }) => {
         rows.push(products.slice(i, i + productsPerRow));
     }
 
+    function formatNumberWithCommas(number) {
+        return new Intl.NumberFormat('en-US').format(number);
+    }
     return (
         <div>
             {rows.map((products, rowIndex) => (
@@ -52,7 +55,7 @@ const ShoppingElement = ({ products }) => {
                                     </div>
                                 </div>
                                 <div className="flex items-center w-[250px] mx-auto justify-between">
-                                    <p className="font-semibold text-xl">{product.price}</p>
+                                    <p className="font-semibold text-xl">{formatNumberWithCommas(product.price)}</p>
                                     <div className="flex justify-center items-center border rounded-md p-[5px] mb-[15px]">
                                         <p>Buy now</p>
                                     </div>
