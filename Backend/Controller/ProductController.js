@@ -1,9 +1,18 @@
 import mongoose from 'mongoose';
 import Product from '../Models/ProductModels.js';
 import asyncHandler from 'express-async-handler';
-import User from '../Models/UserModels.js';
+
+import { DataProduct } from '../Data/DataProduct.js';
+
+
+const importProduct = asyncHandler(async (req, res) => {
+  await Product.deleteMany({});
+  const products = await Product.insertMany(DataProduct);
+  res.status(201).json(products);
+});
 
 // api create product- DONE
+
 const createProduct = asyncHandler(async (req, res) => {
   const {
     name,
@@ -132,6 +141,7 @@ const getAllProduct = asyncHandler(async (req, res) => {
       page,
       pages: Math.ceil(countProducts / pageSize),
     });
+
     // const product = await Product.find();
     // res.send(product);
   } catch (error) {
@@ -305,10 +315,10 @@ const sortAllProduct = asyncHandler(async (req, res) => {
       sortOptions.price = 1;
       projectionOptions.price = 1;
     }
+    console.log(sortOptions);
     const products = await Product.find({}, projectionOptions).sort(
       sortOptions
     ); // 1: increase , -1: reduce
-
     res.status(200).json({
       message: 'Sort Success!!!',
       products,
@@ -344,7 +354,7 @@ const filterProduct = asyncHandler(async (req, res) => {
       filterOptions.price.$lte = maxPrice;
     }
     const sortOptions = {};
-
+    console.log(filterOptions)
     const products = await Product.find(filterOptions).sort(sortOptions);
 
     if (products.length === 0) {
@@ -389,6 +399,7 @@ const searchProduct = asyncHandler(async (req, res) => {
       {
         $match: {
           name: {
+            // $regex: `^${name.split('').join('.*')}`, // Tìm kiếm các tài liệu có tên chứa 'name'
             $regex: `^${name}`, // Tìm kiếm các tài liệu có tên chứa 'name'
             $options: 'i', // 'i' để không phân biệt chữ hoa/chữ thường
           },
@@ -424,7 +435,106 @@ const searchProduct = asyncHandler(async (req, res) => {
   }
 });
 
+const adminDeleteProduct = asyncHandler(async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (product) {
+
+      await product.remove();
+      res.json({ message: 'Product removed successfully' });
+
+    }
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
+const getMyProducts = asyncHandler(async (req, res) => {
+  try {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const products = await Product.find({ sellerId: req.params.id })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    const countProducts = await Product.countDocuments({ sellerId: req.params.id });
+    res.send({
+      products,
+      countProducts,
+      page,
+      pages: Math.ceil(countProducts / pageSize),
+    })
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
+const getFilter = asyncHandler(async (req, res) => {
+  try {
+
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const category = query.category || '';
+    const price = query.price || '';
+    const rating = query.rating || '';
+    const sort = query.sort || '';
+
+    const categoryFilter = category ? { category } : {};
+
+    const ratingFilter =
+      rating
+        ? {
+          rating: {
+            $gte: Number(rating),
+          },
+        }
+        : {};
+    const priceFilter =
+      price
+        ? {
+          // 1-50
+          price: {
+            $gte: Number(price.split('-')[0]),
+            $lte: Number(price.split('-')[1]),
+          },
+        }
+        : {};
+    const sortOrder = sort === 'lowest'
+      ? { price: 1 }
+      : sort === 'highest'
+        ? { price: -1 } : {};
+
+    const products = await Product.find({
+
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
+    })
+      .sort(sortOrder)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+
+    const countProducts = await Product.countDocuments({
+
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
+    });
+    res.send({
+      products,
+      countProducts,
+      page,
+      pages: Math.ceil(countProducts / pageSize),
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+})
+
 export {
+  importProduct,
   createProduct,
   updateProduct,
   deleteProduct,
@@ -436,5 +546,9 @@ export {
   sortAllProduct,
   filterProduct,
   searchProduct,
+  adminDeleteProduct,
+  getMyProducts,
+  getFilter,
+
   /* showAllProductsSeller, */
 };

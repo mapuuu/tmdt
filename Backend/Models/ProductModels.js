@@ -46,7 +46,7 @@ const ProductSchema = mongoose.Schema(
     ],
     description: {
       type: String,
-      maxLength: [255, 'Describe product not longer 255 character....'],
+      // maxLength: [255, 'Describe product not longer 255 character....'],
     },
     price: {
       type: Number,

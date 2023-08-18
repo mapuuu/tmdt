@@ -8,43 +8,41 @@ import Notification from '../Models/NotificationModels.js';
 // api user create order
 const createOrder = asyncHandler(async (req, res) => {
   const {
-    shippingInfo,
+    shippingAddress,
     orderItems,
-    paymentInfo,
-    paidAt,
+    paymentMethod,
     itemsPrice,
-    taxPrice,
     shippingPrice,
     totalPrice,
-    orderStatus,
   } = req.body;
 
-  const user = await User.findById(req.user._id);
-  /*  console.log('user', user._id); */
-  // Lấy thông tin của sản phẩm và thêm sellerId vào orderItems
-  for (const item of orderItems) {
-    const productId = item.productId;
-    const product = await Product.findById(productId);
-    if (product) {
-      item.sellerId = product.sellerId; // Lưu thông tin người bán vào orderItems
-    } else {
-      // Xử lý trường hợp không tìm thấy sản phẩm
-      item.sellerId = null;
-    }
-  }
+
+
+  // const user = await User.findById(req.user._id);
+  // /*  console.log('user', user._id); */
+  // // Lấy thông tin của sản phẩm và thêm sellerId vào orderItems
+  // for (const item of orderItems) {
+  //   const productId = item.productId;
+  //   const product = await Product.findById(productId);
+  //   if (product) {
+  //     item.sellerId = product.sellerId; // Lưu thông tin người bán vào orderItems
+  //   } else {
+  //     // Xử lý trường hợp không tìm thấy sản phẩm
+  //     item.sellerId = null;
+  //   }
+  // }
   // Tạo một đối tượng Order mới
   const order = new Order({
-    shippingInfo,
-    orderItems,
-    paymentInfo,
-    paidAt,
+    shippingAddress,
+    paymentMethod,
     itemsPrice,
-    taxPrice,
     shippingPrice,
     totalPrice,
-    orderStatus,
-    user: user._id,
+    orderItems : orderItems.map((x) => ({ ...x, product: x._id, image: x.images[0] })),
+    user: req.user._id
+    
   });
+  
 
   /* for (const item of orderItems) {
     const productId = item.productId;
@@ -58,15 +56,15 @@ const createOrder = asyncHandler(async (req, res) => {
 
   /* console.log("..user: " + user); */
   // Duyệt qua tất cả các sản phẩm (orderItems) để tạo thông báo cho từng sellerId
-  for (const item of orderItems) {
-    const sellerId = item.sellerId;
+  // for (const item of orderItems) {
+  //   const sellerId = item.sellerId;
 
-    const notification = new Notification({
-      sellerId: sellerId,
-      message: `Bạn có đơn hàng mới từ khách hàng có id là ${user._id}, Họ và Tên là : ${user.fullName}`,
-    });
-    await notification.save();
-  }
+  //   const notification = new Notification({
+  //     sellerId: sellerId,
+  //     message: `Bạn có đơn hàng mới từ khách hàng có id là ${user._id}, Họ và Tên là : ${user.fullName}`,
+  //   });
+  //   await notification.save();
+  // }
 
   res.status(201).json(createdOrder);
 });
@@ -74,7 +72,7 @@ const createOrder = asyncHandler(async (req, res) => {
 // api get my order
 const getMyOrder = asyncHandler(async (req, res) => {
   try {
-    const myOrder = await Order.find({ user: req.user.userId });
+    const myOrder = await Order.find({ user: req.user._id });
 
     if (!myOrder) {
       res.status(404).json({
@@ -86,6 +84,7 @@ const getMyOrder = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+  // console.log(req);
 });
 
 // api get noftification unread
@@ -124,4 +123,29 @@ const sellerConfirmReadNotifi = asyncHandler(async (req, res) => {
   }
 });
 
-export { createOrder, getMyOrder, getNotifiUnread, sellerConfirmReadNotifi };
+const getOrderDetail = asyncHandler(async (req, res) => {
+  try{
+    const order = await Order.findById(req.params.id);
+    if(order){
+      res.send(order)
+    }
+  }catch(error){
+    res.status(500).json({ message: error.message })
+  }
+})
+
+
+const getOrderResult = asyncHandler(async (req, res) => {
+  try{
+    const order = await Order.findById(req.params.id);
+    if(order){
+      res.send(order)
+    }
+  }catch(error){
+    res.status(500).json({ message: error.message })
+  }
+})
+
+
+
+export { createOrder, getMyOrder, getNotifiUnread, sellerConfirmReadNotifi, getOrderDetail, getOrderResult };

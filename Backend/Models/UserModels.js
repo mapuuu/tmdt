@@ -19,8 +19,8 @@ const UserSchema = mongoose.Schema({
   },
   address: {
     type: String,
-    minlength: [5, 'Please fill in your address with at least 10 characters'],
-    maxlength: [200, 'Please fill in s no more 200 characters'],
+    // minlength: [5, 'Please fill in your address with at least 10 characters'],
+    // maxlength: [200, 'Please fill in s no more 200 characters'],
   },
   password: {
     type: String,

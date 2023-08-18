@@ -14,9 +14,15 @@ const importUser = asyncHandler(async (req, res) => {
   res.status(201).json(users);
 });
 
+
+
+
+
+
 // Api register user - DONE
 const registerUser = asyncHandler(async (req, res) => {
-  const { fullName, email, phoneNumber, address, password, images } = req.body;
+  const { fullName, email, password, phoneNumber, address, images } = req.body;
+
   try {
     const userExits = await User.findOne({ email });
     // check if user already exists
@@ -92,6 +98,7 @@ const loginUser = asyncHandler(async (req, res) => {
 // Api update profile- DONE
 
 const updateProfileUser = asyncHandler(async (req, res) => {
+
   const { fullName, phoneNumber, address, images } = req.body;
   try {
     const user = await User.findById(req.user._id);
@@ -203,9 +210,18 @@ const deleteUser = asyncHandler(async (req, res) => {
     if (!user) {
       res.status(404);
       throw new Error('User not found');
+    } else {
+      if (user.role === "admin") {
+        res.status(400).send({ message: 'Can Not Delete Admin Account' });
+        return;
+      }
+
+
+      await user.remove();
+      res.json({ message: 'User removed successfully' });
     }
-    await user.remove();
-    res.json({ message: 'User removed successfully' });
+
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -326,6 +342,31 @@ const deleteLikedProduct = asyncHandler(async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+const PAGE_SIZE = 12;
+const getAllUser = asyncHandler(async (req, res) => {
+  try {
+    const { query } = req;
+    const page = query.page || 1;
+    const pageSize = query.pageSize || PAGE_SIZE;
+    const users = await User.find()
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
+    const countUsers = await User.countDocuments();
+    res.send({
+      users,
+      countUsers,
+      page,
+      pages: Math.ceil(countUsers / pageSize),
+    })
+
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+
+
+  }
+})
+
+
 
 export {
   importUser,
@@ -340,4 +381,5 @@ export {
   getProductsBySellerId,
   addLikedProduct,
   deleteLikedProduct,
+  getAllUser,
 };

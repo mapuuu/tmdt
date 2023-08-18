@@ -12,6 +12,8 @@ import {
   updateProfileUser,
   importUser,
   deleteLikedProduct,
+  getAllUser,
+  
 } from '../Controller/UserController.js';
 import { admin, protect } from '../Middleware/Auth.js';
 import adminMiddleware from '../Middleware/AdminMiddleware.js';
@@ -22,7 +24,7 @@ import {
 import sellerMiddleware from '../Middleware/sellerMiddleware.js';
 
 const router = express.Router();
-router.post('/import', importUser);
+router.get('/import', importUser);
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 /* router.post('/logout', logOutUser) */ // private routes
@@ -43,6 +45,7 @@ router.put(
   adminMiddleware,
   convertRoleSellerToUser
 );
+router.get('/getAllUser', protect, adminMiddleware, getAllUser);
 
 // api notification
 router.get('/getNotifiUnread', protect, sellerMiddleware, getNotifiUnread);

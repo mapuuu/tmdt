@@ -43,4 +43,15 @@ const deletedCategory = asyncHandler(async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
-export { createCategory, updatedCategory, deletedCategory };
+
+const getAllCategoies = asyncHandler(async (req,res) => {
+  try {
+    const categories = await Categories.find({});
+    res.send(categories)
+    
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+    
+  }
+})
+export { createCategory, updatedCategory, deletedCategory, getAllCategoies };
