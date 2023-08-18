@@ -110,7 +110,7 @@ const ProductScreen = () => {
                         <p>Tên sản phẩm</p>
                     </div>
                     <div className="w-full  rounded gap-x-[20px] bg-white mt-[10px]  p-[20px]">
-                        <div className="flex ">
+                        <div className="flex gap-7">
 
                             <div className="w-[50%]   rounded-lg flex justify-center items-center">
                                 <img className="w-[50%] object-cover" src={product.images} alt="" />
@@ -182,7 +182,7 @@ const ProductScreen = () => {
                                 </div>
                             </div>
                         </div> */}
-                            <div className="w-[50%] relative">
+                            <div className="w-[40%] relative">
 
                                 <div className="flex justify-center  flex-col  gap-y-[10px]">
                                     <h2 className="sr-only">Product information</h2>
@@ -286,16 +286,16 @@ const ProductScreen = () => {
 
                                     <SubCate subCategories={subCategories} />
                                     <div>
-                                        <p className="text-3xl mt-[20px] tracking-tight text-gray-900">{formatNumberWithCommas(product.price)} VND</p>
+                                        <p className="text-3xl mt-[20px] tracking-tight text-gray-900">{formatNumberWithCommas(product.price)}đ</p>
 
                                     </div>
-                                    <button onClick={addToCartHandler} className="mt-[10px] flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 ">Add to bag</button>
+                                    <button onClick={addToCartHandler} className="mt-[10px] flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 ">Thêm vào giỏ hàng</button>
 
                                 </div>
                             </div>
                         </div>
 
-                        <div className="mt-[100px] w-[60%] text-sm">
+                        <div className="max-w-4xl mx-auto pt-6">
                             <p className="font-semibold text-2xl">Mô tả về sản phẩm</p>
                             <FormatDes description={product.description} />
                             {/* <p className="font-semibold">Mô tả về sản phẩm:
@@ -303,6 +303,7 @@ const ProductScreen = () => {
                             </p>
                             </p> */}
                         </div>
+
                         <Comment comments={comments} />
                     </div>
                 </div>

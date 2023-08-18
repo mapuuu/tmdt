@@ -3,6 +3,9 @@ import multer from 'multer';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import storage from '../Config/firebase.js';
+import FormData from 'form-data';
+import fs from 'fs';
+import axios from 'axios';
 
 const Uploadrouter = express.Router();
 const upload = multer({
@@ -51,5 +54,33 @@ Uploadrouter.post('/', upload.array('files', 100), async (req, res) => {
     res.status(400).json({ message: 'Error uploading files' });
   }
 });
+
+
+const uploads = multer({ dest: 'uploads/' });
+Uploadrouter.post('/process-image', uploads.single('file'), async (req, res) => {
+  try {
+    // Đọc tệp tin hình ảnh từ thư mục uploads
+    const file = fs.readFileSync(req.file.path);
+
+    // Tạo đối tượng FormData và đính kèm dữ liệu hình ảnh vào trong đó
+    const formData = new FormData();
+    formData.append('file', file, req.file.originalname);
+
+    // Gửi yêu cầu đến microservice Python để xử lý ảnh
+    const response = await axios({
+      method: 'post',
+      url: 'http://localhost:5000/process-image',
+      data: formData,
+      headers: formData.getHeaders()
+    });
+
+    // Xóa tệp tạm thời đã tải lên sau khi đã nhận kết quả từ microservice Python
+    fs.unlinkSync(req.file.path);
+    return res.json(response.data);
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(400).json({ message: 'Error uploading files' });
+  }
+})
 
 export default Uploadrouter;

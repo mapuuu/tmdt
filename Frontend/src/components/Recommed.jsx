@@ -42,7 +42,7 @@ const Recommed = () => {
     return (
         <div className="w-5/6 mx-auto mt-8">
             <div className="flex justify-between items-center ">
-                <p className="font-semibold">Recommended</p>
+                <p className="font-semibold">Sản phẩm tương tự</p>
                 {/* <div className="flex items-center">
                     <p className="font-semibold">More</p>
                     <BiChevronRight />

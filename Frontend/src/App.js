@@ -31,33 +31,33 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home/>} />
+        <Route path="/" element={<Home />} />
         <Route path="/product/:id" element={<ProductScreen />} />
-        <Route path="/cart" element={<Cart/>} />
-        <Route path="/signin" element={<SigninScreen/>} />
-        <Route path="/signup" element={<SignupScreen/>} />
-        <Route path="/profile" element={<Profile/>} />
-        <Route path="/shipping" element={<ShippingAddressScreen/>} />
-        <Route path="/paymentmethod" element={<PaymentMethod/>} />
-        <Route path="/placeorder" element={<PreviewOrder/>} />
-        <Route path="/orderdetail/:id" element={<OrderDetail/>} />
-        <Route path="/ordersuccess/:id" element={<OrderResult/>} />
-        <Route path="/orderhistory" element={<OrderHistory/>} />
-        <Route path="/shopping" element={<Shopping/>} />
-        <Route path="/users" element={<Users/>} />
-        <Route path="/products" element={<Products/>} />
-        <Route path="/categories" element={<Categories/>} />
-        <Route path="/myproducts" element={<MyProducts/>} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/signin" element={<SigninScreen />} />
+        <Route path="/signup" element={<SignupScreen />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/shipping" element={<ShippingAddressScreen />} />
+        <Route path="/paymentmethod" element={<PaymentMethod />} />
+        <Route path="/placeorder" element={<PreviewOrder />} />
+        <Route path="/orderdetail/:id" element={<OrderDetail />} />
+        <Route path="/ordersuccess/:id" element={<OrderResult />} />
+        <Route path="/orderhistory" element={<OrderHistory />} />
+        <Route path="/shopping" element={<Shopping />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/myproducts" element={<MyProducts />} />
 
         {/* <Route path="/admin/orderlist" element={<OrderList/>} /> */}
         {/* <Route path="/shopping" element= {<Shopping/>} /> */}
 
-        <Route path="/test" element={<Modal/>} />
+        <Route path="/test" element={<Modal />} />
 
-        
+
       </Routes>
     </BrowserRouter>
-    
+
   );
 }
 

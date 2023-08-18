@@ -135,14 +135,15 @@ const Profile = () => {
           </div>
           <div className='flex flex-col justify-center items-center gap-[50px] mt-[20px]'>
             <div
-              className='w-[150px] h-[150px] rounded-full  flex items-center justify-center  border'
+              className='w-[150px] h-[150px] rounded-full  flex items-center justify-center border'
+              style={{ cursor: 'pointer' }}
               onClick={handleImageClick}
             >
               {selectedImage ? (
                 <img
                   src={selectedImage}
                   alt='Selected'
-                  className='rounded-full w-[150px] h-[150px]'
+                  className='rounded-full w-[150px] h-[150px'
                 />
               ) : (
                 <>

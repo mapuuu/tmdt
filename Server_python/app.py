@@ -33,6 +33,7 @@ print(pt.index)
 pt.replace(np.nan, 0, inplace=True)
 similarity = cosine_similarity(pt)
 def get_top_rated_products(product_id):
+    products = pd.DataFrame(list(database["products"].find()))
     if ObjectId(product_id) not in products['_id'].unique():
         print(f"Product ID {ObjectId(product_id)} không tồn tại trong danh sách sản phẩm.")
         return None

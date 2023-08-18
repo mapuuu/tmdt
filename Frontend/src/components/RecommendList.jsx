@@ -22,7 +22,7 @@ const RecommendList = ({ products }) => {
     const productsPerRow = 5; // Number of products per row
 
     return (
-        <div className="overflow-x-auto"> {/* Scrollable container */}
+        <div className="overflow-x-auto bg-[#fefefe]"> {/* Scrollable container */}
             <div className="flex mt-4">
                 {products.map((product) => (
                     <div key={product._id} className="border rounded w-[280px] mr-5">

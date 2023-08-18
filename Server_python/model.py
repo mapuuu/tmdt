@@ -52,22 +52,22 @@ class Model:
             pred = 'Anh nong'
             print("Anh nong")
         if pred == 2:
-            pred = 'Balo'
+            pred = 'Balo_vali'
             print("Balo")
         if pred == 3:
-            pred = 'Book'
+            pred = 'Sách'
             print("Book")
         if pred == 4:
             pred = 'Laptop'
             print("Laptop")
         if pred == 5:
-            pred = 'Smartphone'
+            pred = 'Điện thoại'
             print("Smartphone")
         if pred == 6:
-            pred = 'Vali'
+            pred = 'Thời trang nam'
             print("Vali")
         if pred == 7:
-            pred = 'Watch'
+            pred = 'Đồng hồ_Trang sức'
             print("Watch")
         return pred
         

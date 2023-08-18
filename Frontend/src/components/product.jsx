@@ -50,44 +50,46 @@ const Product = (props) => {
         //     <div className="w-5/6 mx-auto mt-8">
         //         <div className="flex justify-between mt-4">
         <div className=" bg-white border p-[10px] rounded relative">
-            <div className="  flex justify-center items-center  rounded mx-auto object-cover">
-                <img className=" object-contain h-[300px]" src={product.images} alt="" />
-            </div>
-            <div className="flex  justify-between text-xl font-medium">
-                <p className="">{truncateDescription(product.name, 40)}</p>
+            <Link to={`/product/${product._id}`}>
+                <div className="  flex justify-center items-center  rounded mx-auto object-cover">
+                    <img className=" object-contain h-[300px]" src={product.images} alt="" />
+                </div>
+                <div className="flex  justify-between text-xl font-medium">
+                    <p className="h-14">{truncateDescription(product.name, 46)}</p>
 
-            </div>
-
-            <div className="flex items-center  justify-between  my-[5px]">
-                <div className="flex items-center ">
-                    <AiFillStar className="text-yellow-300" />
-                    <AiFillStar className="text-yellow-300" />
-                    <AiFillStar className="text-yellow-300" />
-                    <AiFillStar className="text-yellow-300" />
-                    <AiFillStar className="text-yellow-300" />
                 </div>
 
-                <div className="flex">
-                    Đã bán <p>bao nhiêu</p>
-                </div>
-            </div>
-            <div className=" items-center ">
-                <div className="flex items-center">
-                    <p className="font-semibold text-sm line-through">{formatNumberWithCommas(product.price)}</p>
-                    <p className="text-red-500 text-sm">-50%</p>
-                </div>
-                <p className="font-semibold text-xl text-un">{formatNumberWithCommas(product.price)}</p>
+                <div className="flex items-center  justify-between  my-[5px]">
+                    <div className="flex items-center ">
+                        <AiFillStar className="text-yellow-300" />
+                        <AiFillStar className="text-yellow-300" />
+                        <AiFillStar className="text-yellow-300" />
+                        <AiFillStar className="text-yellow-300" />
+                        <AiFillStar className="text-yellow-300" />
+                    </div>
 
-                <Link to={`/product/${product._id}`}>
+                    <div className="flex">
+                        <p>Số lượng {product.quantity}</p>
+                    </div>
+                </div>
+                <div className=" items-center ">
+                    {/* <div className="flex items-center">
+                        <p className="font-semibold text-sm line-through">{formatNumberWithCommas(product.price)}</p>
+                        <p className="text-red-500 text-sm">-50%</p>
+                    </div> */}
+                    {/* <p className="font-semibold text-xl text-un">{formatNumberWithCommas(product.price * 50 / 100)}</p> */}
+                    <p className="font-semibold text-xl text-un">{formatNumberWithCommas(product.price)}đ</p>
+
+
                     <div className="flex justify-center items-center border rounded-md p-[5px] mb-[15px]">
                         {/* <Link to={`/product/${product._id}`}>Buy now</Link> */}
                         <p>Buy now</p>
                     </div>
-                </Link>
-            </div>
+
+                </div>
 
 
-
+            </Link>
         </div>
 
         // {/* <div className="border rounded  w-[280px]">
