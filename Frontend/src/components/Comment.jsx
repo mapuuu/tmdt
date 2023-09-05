@@ -1,36 +1,218 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useReducer, useState } from 'react'
 import Pagination from './pagination';
+import moment from 'moment';
+import { AiFillStar, AiOutlinePlus } from 'react-icons/ai';
+import axios from 'axios';
+import logger from 'use-reducer-logger';
+import { Store } from '../store';
+import { BiPlusCircle } from 'react-icons/bi';
+import { toast } from 'react-toastify';
+import { getError } from '../utils';
 
-const Comment = ({ comments }) => {
 
+const reducer = (state, action) => {
+    switch (action.type) {
+        case 'FETCH_REQUEST':
+            return { ...state, loading: true };
+        case 'FETCH_SUCCESS':
+            return { ...state, order: action.payload, loading: false };
+        case 'FETCH_FAIL':
+            return { ...state, loading: false, error: action.payload };
+        case 'FETCH_FAIL':
+            return { ...state, loading: false, error: action.payload };
+        case 'DELETE_REQUEST':
+            return { ...state, loadingDelete: true, successDelete: false };
+        case 'DELETE_SUCCESS':
+            return {
+                ...state,
+                loadingDelete: false,
+                successDelete: true,
+            };
+        case 'DELETE_FAIL':
+            return { ...state, loadingDelete: false };
+        default:
+            return state;
+    }
+};
+
+const Comment = (props) => {
+    const { comments, id } = props.data;
     const [currentPage, setCurrentPage] = useState(1);
     const commentsPerPage = 5;
 
-    // Tính toán chỉ mục bắt đầu và chỉ mục kết thúc của các comment trên trang hiện tại
+    // console.log(id)
+    const { state, dispatch: ctxDispatch } = useContext(Store);
+    const { userInfo } = state;
+    const [showModal, setShowModal] = useState(false);
+    const [title, setTitle] = useState("");
     const indexOfLastComment = currentPage * commentsPerPage;
     const indexOfFirstComment = indexOfLastComment - commentsPerPage;
     const currentComments = comments.slice(indexOfFirstComment, indexOfLastComment);
+    const [{ loading, error, order }, dispatch] = useReducer(logger(reducer), {
+
+        loading: true,
+        error: '',
+    });
+    useEffect(() => {
+        const fetchData = async () => {
+            // const result = await axios.get('/api/products');
+            // setProducts(result.data);
+            dispatch({ type: 'FETCH_REQUEST' });
+            try {
+                const { data } = await axios.get(`/v4/order/${id}/orderComment`,
+                    {
+                        headers: {
+                            authorization: `Bearer ${userInfo.token}`,
+                        },
+                    });
+                // setProducts(response.data.products);
+
+                dispatch({ type: 'FETCH_SUCCESS', payload: data });
+                console.log(data)
+            } catch (err) {
+                dispatch({ type: 'FETCH_FAIL', payload: err.message });
+            }
+        };
+        fetchData();
+    }, [id]);
+
+    const stopPropagation = (event) => {
+        event.stopPropagation();
+    };
+    console.log(userInfo._id)
+    let index = 0;
+    for (const comment of currentComments) {
+        if (comment.userId === userInfo._id) {
+            // setEditComment(comment.comment);
+            index++;
+        }
+    }
+
+    const [queryText, setQueryText] = useState('');
+    const [rating, setRating] = useState('');
+
+    const handleChangeQuery = (e) => setQueryText(e.target.value);
+    const handleChangeRating = (e) => setRating(e.target.value);
+
+    console.log(queryText)
+
+    const [images, setImages] = useState([]);
+
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const handleImageClick = () => {
+        if (inputRef.current) {
+            inputRef.current.click();
+        }
+    };
+
+    const handleImageClickEdit = () => {
+        if (inputRef.current) {
+            inputRef.current.click();
+        }
+    };
+
+    const inputRef = React.createRef();
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        setImages(file)
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            setSelectedImage(imageUrl);
+        }
+    };
+
+    const handleUpload = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('image', images);
+            formData.append('phrase', queryText)
+
+            //xử lý ảnh
+            const response = await axios.post(
+                'http://localhost:4000/v4/upload/process-comment',
+                formData,
+            );
+            console.log('response:', response.data);
+            // console.log(queryText);
+
+            if (response.data.predicted_label === "ảnh phù hợp" && response.data.result === "Hợp lệ!") {
+                alert('Đang xử lý');
+                // If the image processing is successful, then post the product separately
+                createCommentHandler(); // Pass the formData with the image to postProduct
+            } else {
+                alert('Hình ảnh không phù hợp thể loại!!!');
+                setSelectedImage(null)
+            }
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    };
+
+    const [editRating, setEditRating] = useState(''); // Giá trị ban đầu của editRating là chuỗi trống
+    const [editComment, setEditComment] = useState(''); // Giá trị ban đầu của editComment là chuỗi trống
+    const updatedComments = [...currentComments];
+
+    for (let i = 0; i < updatedComments.length; i++) {
+        if (updatedComments[i].userId === userInfo.id) {
+            // Tìm thấy bình luận của bạn, cập nhật các giá trị cần thiết (ví dụ: rating và comment)
+            console.log(updatedComments[i].rating)
+            setEditRating(updatedComments[i].rating); // Cập nhật editRating nếu tìm thấy
+            setEditComment(updatedComments[i].comment); // Cập nhật editComment nếu tìm thấy
+            break; // Đã tìm thấy và cập nhật, thoát khỏi vòng lặp
+        }
+    }
+
+    const createCommentHandler = async () => {
+        try {
+            dispatch({ type: 'DELETE_REQUEST' });
+
+            const formData = new FormData();
+            formData.append('files', images);
+
+
+            const uploadResponse = await axios.post('http://localhost:4000/v4/upload', formData);
+
+            const newImage = uploadResponse.data[0]
+
+            const result = await axios.post(`/v4/product/${id}/reviews`,
+                {
+                    rating: rating,
+                    comment: queryText,
+                    images: newImage,
+                }, {
+                headers: { Authorization: `Bearer ${userInfo.token}` },
+            }
+            );
+            dispatch({ type: 'DELETE_SUCCESS' });
+            toast.success('Create Review successfully');
+            setShowModal(false);
+            setSelectedImage(null)
+        } catch (error) {
+            toast.error(getError(error))
+            dispatch({
+                type: 'DELETE_FAIL',
+            });
+
+        }
+    }
 
 
     return (
         <div>
             <section id='comment' className="bg-white dark:bg-gray-900 py-8 lg:py-16">
-                <div className="max-w-4xl mx-auto px-4">
+                <div className="max-w-4xl mx-auto">
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Đánh giá sản phẩm</h2>
+                        {
+                            order && index === 0 && (
+                                <h2 onClick={() => { setShowModal(true); setTitle("Đánh giá") }} className="text-lg bg-[#cbf1ff] shadow-lg rounded-3xl  font-bold text-gray-900 px-[10px] py-[5px] cursor-pointer">Đánh giá
+                                </h2>
+                            )
+                        }
                     </div>
-                    {/* <form className="mb-6">
-                        <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-                            <label htmlFor="comment" className="sr-only">Your comment</label>
-                            <textarea rows="6"
-                                className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
-                                placeholder="Write a comment..." required></textarea>
-                        </div>
-                        <button type="submit"
-                            className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
-                            Post comment
-                        </button>
-                    </form> */}
+
                     {currentComments.map((comment) => (
                         <article key={comment._id} className="p-6 text-base bg-white border-t border-gray-200 dark:border-gray-700 dark:bg-gray-900">
                             <footer className="flex justify-between items-center mb-2">
@@ -40,18 +222,25 @@ const Comment = ({ comments }) => {
                                         src={comment.userImage}
                                         alt="Helene Engels" />{comment.userName}</p>
                                     <p className="text-sm text-gray-600 dark:text-gray-400"><time pubdate="true" dateTime="2022-06-23"
-                                        title="June 23rd, 2022">{comment.created_at}</time></p>
+                                        title="June 23rd, 2022">{moment(comment.created_at).format("DD- MM-YYYY")}</time></p>
                                 </div>
-                                <button id="dropdownComment4Button" data-dropdown-toggle="dropdownComment4"
-                                    className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                                    type="button">
-                                    <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z">
-                                        </path>
-                                    </svg>
-                                </button>
+                                {
+                                    comment.userId === userInfo._id ? (
+
+                                        <button onClick={() => { setShowModal(true); setTitle("Chỉnh sửa đánh giá") }} id="dropdownComment4Button" data-dropdown-toggle="dropdownComment4"
+                                            className="inline-flex items-center p-2 text-sm font-medium text-center text-gray-400 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-50 dark:bg-gray-900 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                                            type="button">
+                                            <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                    ) : (
+                                        <></>
+                                    )
+                                }
                                 <div id="dropdownComment4"
                                     className="hidden z-10 w-36 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
                                     <ul className="py-1 text-sm text-gray-700 dark:text-gray-200"
@@ -72,127 +261,21 @@ const Comment = ({ comments }) => {
                                 </div>
                             </footer>
                             <div className="flex items-center">
-                                <p className="text-sm text-gray-600 dark:text-gray-400"><time pubdate="true" dateTime="2022-06-23"
-                                    title="June 23rd, 2022">Rating {comment.rating}</time></p>
+                                <p className="text text-gray-600 dark:text-gray-400"><time pubdate="true" dateTime="2022-06-23"
+                                    title="June 23rd, 2022">Điểm số: {comment.rating}  </time></p>
+                                <AiFillStar className="text-yellow-200" />
                             </div>
                             <p className="text-gray-500 dark:text-gray-400">{comment.comment}</p>
                             <div className="flex items-center mt-4 space-x-4">
-                                <button type="button"
+                                {/* <button type="button"
                                     className="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400">
                                     <svg aria-hidden="true" className="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                                     Reply
-                                </button>
+                                </button> */}
                             </div>
                         </article>
 
-                        // <div key={comment._id}
-                        //     className="p-3 mb-4 border border-gray-200 rounded-md bg-gray-50 lg:p-6 dark:bg-gray-700 dark:border-gray-700">
-                        //     <div className="md:block lg:flex">
-                        //         <img className="object-cover w-16 h-16 mr-4 rounded-full shadow"
-                        //             src={comment.userImage} alt="avatar" />
-                        //         <div>
-                        //             <div className="flex flex-wrap items-center justify-between mb-1">
-                        //                 <div className="mb-2 md:mb-0">
-                        //                     <h2 className="mb-1 text-lg font-semibold text-gray-900 dark:text-gray-400">
-                        //                         {comment.userName}
-                        //                     </h2>
-                        //                     <p className="text-xs text-gray-600 dark:text-gray-400">{comment.created_at}</p>
-                        //                 </div>
-                        //                 <div>
-                        //                     <ul className="flex items-center pb-1 mb-2">
-                        //                         <li>
-                        //                             <a href="#">
-                        //                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        //                                     fill="currentColor"
-                        //                                     className="w-4 mr-1 text-blue-500 dark:text-blue-400 bi bi-star-fill"
-                        //                                     viewBox="0 0 16 16">
-                        //                                     <path
-                        //                                         d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z">
-                        //                                     </path>
-                        //                                 </svg>
-                        //                             </a>
-                        //                         </li>
-                        //                         <li>
-                        //                             <a href="#">
-                        //                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        //                                     fill="currentColor"
-                        //                                     className="w-4 mr-1 text-blue-500 dark:text-blue-400 bi bi-star-fill"
-                        //                                     viewBox="0 0 16 16">
-                        //                                     <path
-                        //                                         d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z">
-                        //                                     </path>
-                        //                                 </svg>
-                        //                             </a>
-                        //                         </li>
-                        //                         <li>
-                        //                             <a href="#">
-                        //                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        //                                     fill="currentColor"
-                        //                                     className="w-4 mr-1 text-blue-500 dark:text-blue-400 bi bi-star-fill"
-                        //                                     viewBox="0 0 16 16">
-                        //                                     <path
-                        //                                         d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z">
-                        //                                     </path>
-                        //                                 </svg>
-                        //                             </a>
-                        //                         </li>
-                        //                         <li>
-                        //                             <a href="#">
-                        //                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        //                                     fill="currentColor"
-                        //                                     className="w-4 mr-1 text-blue-500 dark:text-blue-400 bi bi-star-fill"
-                        //                                     viewBox="0 0 16 16">
-                        //                                     <path
-                        //                                         d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z">
-                        //                                     </path>
-                        //                                 </svg>
-                        //                             </a>
-                        //                         </li>
-                        //                         <li>
-                        //                             <a href="#">
-                        //                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        //                                     fill="currentColor"
-                        //                                     className="w-4 mr-1 text-blue-500 dark:text-blue-400 bi bi-star-half"
-                        //                                     viewBox="0 0 16 16">
-                        //                                     <path
-                        //                                         d="M5.354 5.119 7.538.792A.516.516 0 0 1 8 .5c.183 0 .366.097.465.292l2.184 4.327 4.898.696A.537.537 0 0 1 16 6.32a.548.548 0 0 1-.17.445l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256a.52.52 0 0 1-.146.05c-.342.06-.668-.254-.6-.642l.83-4.73L.173 6.765a.55.55 0 0 1-.172-.403.58.58 0 0 1 .085-.302.513.513 0 0 1 .37-.245l4.898-.696zM8 12.027a.5.5 0 0 1 .232.056l3.686 1.894-.694-3.957a.565.565 0 0 1 .162-.505l2.907-2.77-4.052-.576a.525.525 0 0 1-.393-.288L8.001 2.223 8 2.226v9.8z">
-                        //                                     </path>
-                        //                                 </svg>
-                        //                             </a>
-                        //                         </li>
-                        //                     </ul>
-                        //                     <div className="flex items-center">
-                        //                         <div className="flex mr-3 text-sm text-gray-700 dark:text-gray-400">
-                        //                             <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16"
-                        //                                 height="16" fill="currentColor"
-                        //                                 className="w-4 h-4 mr-1 text-blue-400 bi bi-hand-thumbs-up-fill"
-                        //                                 viewBox="0 0 16 16">
-                        //                                 <path
-                        //                                     d="M6.956 1.745C7.021.81 7.908.087 8.864.325l.261.066c.463.116.874.456 1.012.965.22.816.533 2.511.062 4.51a9.84 9.84 0 0 1 .443-.051c.713-.065 1.669-.072 2.516.21.518.173.994.681 1.2 1.273.184.532.16 1.162-.234 1.733.058.119.103.242.138.363.077.27.113.567.113.856 0 .289-.036.586-.113.856-.039.135-.09.273-.16.404.169.387.107.819-.003 1.148a3.163 3.163 0 0 1-.488.901c.054.152.076.312.076.465 0 .305-.089.625-.253.912C13.1 15.522 12.437 16 11.5 16H8c-.605 0-1.07-.081-1.466-.218a4.82 4.82 0 0 1-.97-.484l-.048-.03c-.504-.307-.999-.609-2.068-.722C2.682 14.464 2 13.846 2 13V9c0-.85.685-1.432 1.357-1.615.849-.232 1.574-.787 2.132-1.41.56-.627.914-1.28 1.039-1.639.199-.575.356-1.539.428-2.59z">
-                        //                                 </path>
-                        //                             </svg></a>
-                        //                             <span>12</span>
-                        //                         </div>
-                        //                         <div className="flex text-sm text-gray-700 dark:text-gray-400">
-                        //                             <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16"
-                        //                                 height="16" fill="currentColor"
-                        //                                 className="w-4 h-4 mr-1 text-blue-400 bi bi-chat"
-                        //                                 viewBox="0 0 16 16">
-                        //                                 <path
-                        //                                     d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z">
-                        //                                 </path>
-                        //                             </svg></a>
-                        //                             <span>8</span>
-                        //                         </div>
-                        //                     </div>
-                        //                 </div>
-                        //             </div>
-                        //             <p className="mt-3 text-sm text-gray-700 dark:text-gray-400">
-                        //                 {comment.comment}
-                        //             </p>
-                        //         </div>
-                        //     </div>
-                        // </div>
+
                     ))}
 
                     <div className="flex justify-center mt-4">
@@ -205,8 +288,136 @@ const Comment = ({ comments }) => {
                     </div>
                 </div>
             </section>
+
+            {
+                showModal && (
+
+                    <div onClick={() => setShowModal(false)} className={`fixed z-10 top-0 left-0 right-0 bottom-0 bg-black/20 `}>
+                        <div onClick={stopPropagation} className='fixed bg-white rounded w-[40%]  top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] overflow-y-auto max-h-[90vh]'>
+                            <div className='flex flex-col justify-center items-center p-[10px] gap-[10px]'>
+
+                                <p className='font-medium text-xl'>{title}</p>
+                                {
+                                    title === "Đánh giá" ? (
+                                        <div className='w-2/3'>
+                                            <div className='flex flex-col w-full'>
+                                                <label className='text-sm font-medium' htmlFor="">Điểm số</label>
+                                                <input
+                                                    className='p-[10px] outline-none border rounded'
+                                                    placeholder=''
+                                                    type="number"
+                                                    min={1}
+                                                    max={5}
+                                                    value={rating}
+                                                    onChange={handleChangeRating}
+                                                />
+                                            </div>
+
+                                            <div className='flex flex-col w-full'>
+                                                <label className='text-sm font-medium' htmlFor="">Đánh giá</label>
+                                                <textarea
+                                                    className='w-full outline-none border rounded p-[5px]'
+                                                    name=""
+                                                    id=""
+                                                    cols=""
+                                                    rows="5"
+                                                    value={queryText}
+                                                    onChange={handleChangeQuery}
+                                                >
+                                                </textarea>
+
+                                            </div>
+                                            <div className='flex flex-col w-full'>
+                                                <label className='text-sm font-medium' htmlFor="">Ảnh</label>
+                                                <div className='flex gap-[20px]'>
+                                                    <div className='h-[100px] w-[100px] flex justify-center items-center bg-gray-100 border border-black/50 border-dashed '
+                                                        style={{ cursor: 'pointer' }}
+                                                        onClick={handleImageClick}
+                                                    >
+                                                        {selectedImage ? (
+                                                            <img
+                                                                src={selectedImage}
+                                                                alt='Selected'
+                                                                className='w-[150px] h-[150px'
+                                                            />
+                                                        ) : (
+                                                            <BiPlusCircle className='text-5xl text-black/10' />
+                                                        )}
+                                                    </div>
+                                                    <input
+                                                        ref={inputRef}
+                                                        type='file'
+                                                        accept='image/*'
+                                                        style={{ display: 'none' }}
+                                                        onChange={handleFileChange}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    ) : (
+                                        <div className=''>
+                                            <div className='flex flex-col w-full'>
+                                                <label className='text-sm font-medium' htmlFor="">Điểm số</label>
+                                                <input
+                                                    className='p-[10px] outline-none border rounded'
+                                                    placeholder=''
+                                                    type="number"
+                                                    min={1}
+                                                    max={5}
+                                                    value={editRating}
+                                                    onChange={(e) => setEditRating(e.target.value)}
+                                                />
+                                            </div>
+
+                                            <div className='flex flex-col w-full'>
+                                                <label className='text-sm font-medium' htmlFor="">Đánh giá</label>
+                                                <textarea
+                                                    className='w-full outline-none border rounded p-[5px]'
+                                                    name=""
+                                                    id=""
+                                                    cols=""
+                                                    rows="5"
+                                                    value={editComment}
+                                                    onChange={(e) => setEditComment(e.target.value)}
+                                                >
+
+                                                </textarea>
+
+                                            </div>
+                                            <div className='flex flex-col w-full'>
+                                                <label className='text-sm font-medium' htmlFor="">Ảnh</label>
+                                                <div className='flex gap-[20px]'>
+                                                    <div className='h-[100px] w-[100px] flex justify-center items-center bg-gray-100 border border-black/50 border-dashed '>
+                                                        <AiOutlinePlus className='opacity-50 text-2xl' />
+                                                    </div>
+
+                                                    <div className='h-[100px] w-[100px] flex justify-center items-center bg-gray-100 border border-black/50 border-dashed '>
+                                                        <AiOutlinePlus className='opacity-50 text-2xl' />
+                                                    </div>
+
+                                                    <div className='h-[100px] w-[100px] flex justify-center items-center bg-gray-100 border border-black/50 border-dashed '>
+                                                        <AiOutlinePlus className='opacity-50 text-2xl' />
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                                <div className='bg-[#cbf1ff] shadow-lg rounded px-[20px] py-[10px] cursor-pointer '>
+                                    <button onClick={() => { handleUpload() }} type='submit'>
+                                        <p>Hoàn tất</p>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
         </div>
     )
 }
 
-export default Comment
+export default Comment;

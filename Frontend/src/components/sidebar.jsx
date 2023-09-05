@@ -41,117 +41,135 @@ const SideBar = () => {
             {
                 userInfo && userInfo.role ==="user" ?  (
 
-                <div className='col-span-1 bg-white rounded ' >
+                <div className='col-span-1 bg-white rounded shadow-lg' >
                     <ul className='flex flex-col gap-y-[10px] p-[10px]'>
                         
-                            <li className={ `${highlightedItem === 'profile' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                            <li className={ `${highlightedItem === 'profile' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
                                 
                                 <Link to="/profile">
-                                    <p className='text-xl font-medium '>Profile</p>
+                                    <p className='text-xl font-medium '>Thông tin</p>
 
                                 </Link>
                             </li>
-                            <li className={ `${highlightedItem === 'orderhistory' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                            <li className={ `${highlightedItem === 'orderhistory' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
                                 <Link to="/orderhistory">
                                 
-                                    <p className='text-xl font-medium '>Order history</p>
+                                    <p className='text-xl font-medium '>Lịch sử mua hàng</p>
                                 </Link>
                             </li>
-                            <li className=' rounded p-[10px] hover:bg-orange-100'>
+                            <li className={ `${highlightedItem === 'passwordchange' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
+                                <Link to="/passwordchange">
+                                
+                                    <p className='text-xl font-medium '>Đổi mật khẩu</p>
+                                </Link>
+                            </li>
+                            <li className=' rounded p-[10px] hover:bg-[#cbf1ff]'>
                                 <Link onClick={signoutHandler} to="/">
                                 
-                                    <p className='text-xl font-medium '>Log out</p>
+                                    <p className='text-xl font-medium '>Đăng xuất</p>
                                 </Link>
                             </li>
                         
                     </ul>
                 </div>
                 ) : userInfo && userInfo.role === "admin" ? (
-                    <div className='col-span-1 bg-slate-300 rounded ' >
+                    <div className='col-span-1 bg-white rounded shadow-lg' >
                         <ul className='flex flex-col gap-y-[10px] p-[10px]'>
                             
-                                <li className={ `${highlightedItem === 'profile' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                                <li className={ `${highlightedItem === 'profile' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
                                    
                                     <Link to="/profile">
                                     
-                                    <p className='text-xl font-medium'>Profile</p>
+                                    <p className='text-xl font-medium'>Thông tin</p>
                                     </Link>
                                 </li>
-                                <li className={ `${highlightedItem === 'dashboard' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                                <li className={ `${highlightedItem === 'dashboard' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
                                     <Link to="">
                                     
-                                        <p className='text-xl font-medium'>Dashboard</p>
+                                        <p className='text-xl font-medium'>Thống kê</p>
                                     </Link>
                                 </li>
-                                <li className={ `${highlightedItem === 'categories' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                                <li className={ `${highlightedItem === 'categories' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
                                     <Link to="/categories">
                                     
-                                        <p className='text-xl font-medium'>Categories</p>
+                                        <p className='text-xl font-medium'>Thể loại</p>
                                     </Link>
                                 </li>
-                                <li className={ `${highlightedItem === 'orders' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                                <li className={ `${highlightedItem === 'orders' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
                                     <Link to="/orders">
                                     
-                                        <p className='text-xl font-medium'>Orders</p>
+                                        <p className='text-xl font-medium'>Đơn hàng</p>
                                     </Link>
                                 </li>
 
-                                <li className={ `${highlightedItem === 'users' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                                <li className={ `${highlightedItem === 'users' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
                                     <Link to="/users">
                                     
-                                        <p className='text-xl font-medium'>Users</p>
+                                        <p className='text-xl font-medium'>Người dùng</p>
                                     </Link>
                                 </li>
-                                <li className={ `${highlightedItem === 'products' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                                <li className={ `${highlightedItem === 'products' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
                                     <Link to="/products">
                                     
-                                        <p className='text-xl font-medium'>Products</p>
+                                        <p className='text-xl font-medium'>Sản phẩm</p>
                                     </Link>
                                 </li>
+                                <li className={ `${highlightedItem === 'passwordchange' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
+                                <Link to="/passwordchange">
+                                
+                                    <p className='text-xl font-medium '>Đổi mật khẩu</p>
+                                </Link>
+                            </li>
 
-                                <li className='rounded p-[10px] hover:bg-orange-100'>
+                                <li className='rounded p-[10px] hover:bg-[#cbf1ff]'>
                                     <Link onClick={signoutHandler} to="/">
                                     
-                                        <p className='text-xl font-medium'>Log out</p>
+                                        <p className='text-xl font-medium'>Đăng xuất</p>
                                     </Link>
                                 </li>
                             
                         </ul>
                     </div>
                 ) : userInfo && userInfo.role === "seller" ? (
-                    <div className='col-span-1 bg-slate-300 rounded ' >
+                    <div className='col-span-1 bg-white rounded shadow-lg' >
                         <ul className='flex flex-col gap-y-[10px] p-[10px]'>
                             
-                                <li className={ `${highlightedItem === 'profile' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                                <li className={ `${highlightedItem === 'profile' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg ' } rounded p-[10px]`} >
                                    
                                     <Link to="/profile">
                                     
-                                    <p className='text-xl font-medium'>Profile</p>
+                                    <p className='text-xl font-medium'>Thông tin</p>
                                     </Link>
                                 </li>
-                                <li className={ `${highlightedItem === 'dashboard' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                                <li className={ `${highlightedItem === 'dashboard' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
                                     <Link to="">
                                     
-                                        <p className='text-xl font-medium'>Dashboard</p>
+                                        <p className='text-xl font-medium'>Thống kê</p>
                                     </Link>
                                 </li>
-                                <li className={ `${highlightedItem === 'myproucts' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                                <li className={ `${highlightedItem === 'myproducts' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
                                     <Link to="/myproducts">
                                     
-                                        <p className='text-xl font-medium'>My Products</p>
+                                        <p className='text-xl font-medium'>Sản phẩm của tôi</p>
                                     </Link>
                                 </li>
-                                <li className={ `${highlightedItem === 'myorders' ? 'bg-orange-100' : 'hover:bg-orange-100' } rounded p-[10px]`} >
+                                <li className={ `${highlightedItem === 'myorders' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
                                     <Link to="/myorders">
                                     
-                                        <p className='text-xl font-medium'>My Orders</p>
+                                        <p className='text-xl font-medium'>Đơn hàng của tôi</p>
                                     </Link>
                                 </li>
+                                <li className={ `${highlightedItem === 'passwordchange' ? 'bg-[#cbf1ff] shadow-lg' : 'hover:bg-[#cbf1ff] hover:shadow-lg hover:shadow-lg' } rounded p-[10px]`} >
+                                <Link to="/passwordchange">
+                                
+                                    <p className='text-xl font-medium '>Đổi mật khẩu</p>
+                                </Link>
+                            </li>
 
-                                <li className='rounded p-[10px] hover:bg-orange-100'>
+                                <li className='rounded p-[10px] hover:bg-[#cbf1ff]'>
                                     <Link onClick={signoutHandler} to="/">
                                     
-                                        <p className='text-xl font-medium'>Log out</p>
+                                        <p className='text-xl font-medium'>Đăng xuất</p>
                                     </Link>
                                 </li>
                             

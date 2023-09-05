@@ -55,7 +55,6 @@ Uploadrouter.post('/', upload.array('files', 100), async (req, res) => {
   }
 });
 
-
 const uploads = multer({ dest: 'uploads/' });
 Uploadrouter.post('/process-image', uploads.single('file'), async (req, res) => {
   try {
@@ -82,5 +81,33 @@ Uploadrouter.post('/process-image', uploads.single('file'), async (req, res) => 
     res.status(400).json({ message: 'Error uploading files' });
   }
 })
+
+Uploadrouter.post('/process-comment', uploads.single('image'), async (req, res) => {
+  try {
+    // Đọc tệp tin hình ảnh từ thư mục uploads
+    const file = fs.readFileSync(req.file.path);
+
+    // Tạo đối tượng FormData và đính kèm dữ liệu hình ảnh và trường phrase vào trong đó
+    const formData = new FormData();
+    formData.append('image', file, req.file.originalname);
+    formData.append('phrase', req.body.phrase);
+
+    // Gửi yêu cầu đến microservice Python để xử lý ảnh
+    const response = await axios({
+      method: 'post',
+      url: 'http://localhost:5000/comment',
+      data: formData,
+      headers: formData.getHeaders()
+    });
+
+    // Xóa tệp tạm thời đã tải lên sau khi đã nhận kết quả từ microservice Python
+    fs.unlinkSync(req.file.path);
+    return res.json(response.data);
+  } catch (error) {
+    console.error('Lỗi:', error.message);
+    res.status(400).json({ message: 'Lỗi khi tải lên tệp' });
+  }
+})
+
 
 export default Uploadrouter;

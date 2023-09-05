@@ -152,6 +152,8 @@ const getAllProduct = asyncHandler(async (req, res) => {
 // api create review and comment product - DONE
 const createReviewProduct = asyncHandler(async (req, res) => {
   const { rating, comment, images } = req.body;
+
+  console.log(req.body)
   try {
     const product = await Product.findById(req.params.id);
     if (product) {
@@ -171,13 +173,14 @@ const createReviewProduct = asyncHandler(async (req, res) => {
         comment,
         images,
       };
+      console.log(review)
       product.comments.push(review);
       product.numberOfReviews = product.comments.length;
       product.rate =
         product.comments.reduce((acc, item) => item.rating + acc, 0) /
         product.comments.length;
 
-      await product.save();
+      const s = await product.save();
       res.status(201).json({
         message: 'Review addded',
       });
@@ -186,6 +189,7 @@ const createReviewProduct = asyncHandler(async (req, res) => {
       throw new Error('Movie not found');
     }
   } catch (error) {
+    console.log(error.message)
     res.status(400).json({ message: error.message });
   }
 });
@@ -399,7 +403,6 @@ const searchProduct = asyncHandler(async (req, res) => {
       {
         $match: {
           name: {
-            // $regex: `^${name.split('').join('.*')}`, // Tìm kiếm các tài liệu có tên chứa 'name'
             $regex: `^${name}`, // Tìm kiếm các tài liệu có tên chứa 'name'
             $options: 'i', // 'i' để không phân biệt chữ hoa/chữ thường
           },
@@ -478,16 +481,17 @@ const getFilter = asyncHandler(async (req, res) => {
     const pageSize = query.pageSize || PAGE_SIZE;
     const category = query.category || '';
     const price = query.price || '';
-    const rating = query.rating || '';
+    const rate = query.rate || '';
     const sort = query.sort || '';
+    const decodedCategory = decodeURIComponent(category);
+    const categoryFilter = category ? { category: decodedCategory } : {};
 
-    const categoryFilter = category ? { category } : {};
-
-    const ratingFilter =
-      rating
+    const rateFilter =
+      rate
         ? {
-          rating: {
-            $gte: Number(rating),
+          rate: {
+            $gte: Number(rate.split('-')[0]),
+            $lte: Number(rate.split('-')[1]),
           },
         }
         : {};
@@ -510,7 +514,7 @@ const getFilter = asyncHandler(async (req, res) => {
 
       ...categoryFilter,
       ...priceFilter,
-      ...ratingFilter,
+      ...rateFilter,
     })
       .sort(sortOrder)
       .skip(pageSize * (page - 1))
@@ -520,7 +524,7 @@ const getFilter = asyncHandler(async (req, res) => {
 
       ...categoryFilter,
       ...priceFilter,
-      ...ratingFilter,
+      ...rateFilter,
     });
     res.send({
       products,
@@ -532,6 +536,24 @@ const getFilter = asyncHandler(async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 })
+
+const test = async (req, res) => {
+  try {
+    const products = await Product.find({});
+
+    // Loop qua mỗi sản phẩm và thêm trường discount
+    for (const product of products) {
+      product.discount = req.body.discount;
+      product.sold = req.body.sold; // Gán giá trị discount từ request body
+      await product.save(); // Lưu lại sản phẩm đã được cập nhật
+    }
+
+    res.send("ok");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
+};
 
 export {
   importProduct,
@@ -549,6 +571,7 @@ export {
   adminDeleteProduct,
   getMyProducts,
   getFilter,
+  test
 
   /* showAllProductsSeller, */
 };

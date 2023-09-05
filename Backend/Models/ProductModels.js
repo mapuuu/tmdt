@@ -5,7 +5,7 @@ const reviewSchema = mongoose.Schema(
     userName: { type: String, required: true },
     userImage: { type: String },
     rating: { type: Number, required: true },
-    comment: { type: String, required: true },
+    comment: { type: String },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -72,7 +72,17 @@ const ProductSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
+    discount: {
+      type: Number,
+
+    },
+    sold: {
+      type: Number,
+    },
     comments: [reviewSchema],
+  },
+  {
+    timestamps: true,
   }
   /* {
     id: false,

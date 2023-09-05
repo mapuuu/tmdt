@@ -15,6 +15,7 @@ import {
   adminDeleteProduct,
   getMyProducts,
   getFilter,
+  test,
   
 } from '../Controller/ProductController.js';
 import { protect } from '../Middleware/Auth.js';
@@ -47,6 +48,8 @@ router.delete('/admin/:id/deleteProduct', protect, adminMiddleware, adminDeleteP
 router.get('/:id/getMyProducts', protect, sellerMiddleware, getMyProducts);
 
 router.get('/getFilter', getFilter);
+
+router.post('/test/test', test)
 
 
 // API SELLER

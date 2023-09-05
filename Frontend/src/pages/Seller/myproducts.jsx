@@ -103,13 +103,20 @@ const MyProducts = () => {
   const [editproductSubCategories, setEditProductSubCategories] = useState([{}]);
   const [editproductPrice, setEditProductPrice] = useState("");
   const [editproductQuantity, setEditProductQuantity] = useState("");
-  const [editproductDescription, setEditProductDescription] = useState("")
+  const [editproductDescription, setEditProductDescription] = useState("");
+  const [editproductImage, setEditProductImage] = useState([]);
 
   const [images, setImages] = useState([]);
 
   const [selectedImage, setSelectedImage] = useState(null);
 
   const handleImageClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+
+  const handleImageClickEdit = () => {
     if (inputRef.current) {
       inputRef.current.click();
     }
@@ -126,7 +133,15 @@ const MyProducts = () => {
     }
   };
 
-  console.log(productSubCategories)
+  const handleFileChangeEdit = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setEditProductImage(imageUrl);
+    }
+  };
+
+  // console.log(productSubCategories)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -181,7 +196,7 @@ const MyProducts = () => {
         formData,
       );
 
-      console.log('response:', productCategoy);
+      // console.log('response:', productCategoy);
       // console.log(queryText);
 
       if (response.data === productCategoy) {
@@ -227,6 +242,7 @@ const MyProducts = () => {
       dispatch({ type: 'DELETE_SUCCESS' });
       toast.success('Create Product successfully');
       setShowModal(false);
+      setSelectedImage(null)
     } catch (error) {
       toast.error(getError(error))
       dispatch({
@@ -305,6 +321,7 @@ const MyProducts = () => {
 
 
   const select = async (product) => {
+    console.log(product)
     setEditProductName(product.name);
     setEditProductCategory(product.category);
     setEditProductPrice(product.price);
@@ -312,11 +329,12 @@ const MyProducts = () => {
     setEditProductDescription(product.description);
     setSelectCategory(product.category);
     setEditProductSubCategories(product.sub_categories);
+    setEditProductImage(product.images);
     setItem(product);
-
-
   }
-  console.log(editproductSubCategories)
+  // console.log(editproductSubCategories)
+
+  console.log(editproductImage)
 
   return (
     <div className='w-full mt-[100px] bg-[#F1F5F9]'>
@@ -664,27 +682,47 @@ const MyProducts = () => {
 
                     <div className='flex flex-col '>
                       <label className='text-sm font-medium' htmlFor="">Images</label>
-                      <div className='flex gap-[20px]'>
-                        <div className='h-[100px] w-[100px] flex justify-center items-center bg-gray-100 border border-black/50 border-dashed '>
-                          <AiOutlinePlus className='opacity-50 text-2xl' />
-                        </div>
-
-                        <div className='h-[100px] w-[100px] flex justify-center items-center bg-gray-100 border border-black/50 border-dashed '>
-                          <AiOutlinePlus className='opacity-50 text-2xl' />
-                        </div>
-
-                        <div className='h-[100px] w-[100px] flex justify-center items-center bg-gray-100 border border-black/50 border-dashed '>
-                          <AiOutlinePlus className='opacity-50 text-2xl' />
-                        </div>
-
-                        <div className='h-[100px] w-[100px] flex justify-center items-center bg-gray-100 border border-black/50 border-dashed '>
-                          <AiOutlinePlus className='opacity-50 text-2xl' />
-                        </div>
-
-                        <div className='h-[100px] w-[100px] flex justify-center items-center bg-gray-100 border border-black/50 border-dashed '>
-                          <AiOutlinePlus className='opacity-50 text-2xl' />
-                        </div>
+                      <div
+                        className='h-[100px] w-[100px] flex justify-center items-center bg-gray-100 border border-black/50 border-dashed '
+                        style={{ cursor: 'pointer' }}
+                        onClick={handleImageClickEdit}
+                      >
+                        {editproductImage ? (
+                          <img
+                            src={editproductImage}
+                            alt='Selected'
+                            className='w-[150px] h-[150px'
+                          />
+                        ) : (
+                          <BiPlusCircle className='text-5xl text-black/10' />
+                        )}
+                        {/* {selectedImage ? (
+                          <img
+                            src={selectedImage}
+                            alt='Selected'
+                            className='rounded-full w-[150px] h-[150px'
+                          />
+                        ) : (
+                          <>
+                            {userInfo.images !== "" ? (
+                              <img
+                                className='w-[150px] h-[150px] rounded-full'
+                                src={userInfo.images}
+                                alt=''
+                              />
+                            ) : (
+                              <BiPlusCircle className='text-5xl text-black/10' />
+                            )}
+                          </>
+                        )} */}
                       </div>
+                      <input
+                        ref={inputRef}
+                        type='file'
+                        accept='image/*'
+                        style={{ display: 'none' }}
+                        onChange={handleFileChangeEdit}
+                      />
                     </div>
 
                     <div className='flex flex-col '>

@@ -32,7 +32,7 @@ const SubCate = ({ subCategories }) => {
                             <div className="flex gap-[10px]">
                                 {subCategories.map((sub,index) => (
                                     
-                                    <label key={uuidv4()} onClick={() => handleClick(index, rowIndex)} className={`${ JSON.stringify(select) === JSON.stringify([index, rowIndex])  ?  "bg-red-200" : "bg-white hover:bg-gray-50" }  relative flex justify-center items-center px-5 py-4 rounded-md border  text-sm font-medium uppercase  focus:outline-none  cursor-pointer text-gray-900 shadow-sm`}>
+                                    <label key={uuidv4()} onClick={() => handleClick(index, rowIndex)} className={`${ JSON.stringify(select) === JSON.stringify([index, rowIndex])  ?  "bg-[#cbf1ff] shadow-lg" : "bg-white hover:bg-[#cbf1ff] hover:shadow-lg" }  relative flex justify-center items-center px-5 py-4 rounded-md border  text-sm font-medium uppercase  focus:outline-none  cursor-pointer text-gray-900 shadow-sm`}>
                                         
                                         <span id="size-choice-1-label">{sub.label}</span>
 

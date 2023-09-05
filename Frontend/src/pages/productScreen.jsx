@@ -17,8 +17,9 @@ import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import FormatDes from "../components/formatDes";
 import SubCate from "../components/subCate.jsx";
+import Comment from "../components/comment";
 import Recommed from "../components/Recommed";
-import Comment from "../components/Comment";
+
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -38,11 +39,12 @@ const ProductScreen = () => {
     const params = useParams();
     const { id } = params;
 
+    const [seller, setSeller] = useState("")
     const [subCategories, setSubCategories] = useState(null);
     const [comments, setComments] = useState(null);
-    console.log(subCategories)
+    // console.log(subCategories)
     // console.log(params.id)
-    console.log(`${id}`)
+    // const [productId, setProductId] = useState(null)
     const [{ loading, error, product }, dispatch] = useReducer(reducer, {
         product: [],
         loading: true,
@@ -53,15 +55,33 @@ const ProductScreen = () => {
             dispatch({ type: 'FETCH_REQUEST' });
             try {
                 const result = await axios.get(`/v4/product/${id}/getProductById`);
+                const { data } = await axios.get(`/v4/user/${result.data.sellerId}/getSeller`);
                 dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
-                setSubCategories(result.data.sub_categories)
-                setComments(result.data.comments)
+                setSubCategories(result.data.sub_categories);
+                setComments(result.data.comments);
+
+                // console.log(result.data)
+                // console.log(data)
+                setSeller(data.fullName)
+                // console.log(result.data.sellerId)
             } catch (err) {
                 dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
             }
         };
         fetchData();
     }, [id]);
+
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const result = await axios.get(`/v4/user/${product.sellerId}/getSeller`);
+    //             setSeller(result.data.fullName)
+    //         } catch (error) {
+    //             console.log(error)
+    //         }
+    //     };
+    //     fetchData();
+    // }, [product.sellerId])
 
     const { state, dispatch: ctxDispatch } = useContext(Store);
     const { cart } = state;
@@ -74,19 +94,17 @@ const ProductScreen = () => {
             window.alert('Sản phẩm đã hết');
             return;
         }
+        // console.log(...product, quantity)
         ctxDispatch({
             type: 'CART_ADD_ITEM',
             payload: { ...product, quantity },
+
         });
         // navigate('/cart');
     };
     function formatNumberWithCommas(number) {
         return new Intl.NumberFormat('en-US').format(number);
     }
-
-    const handleNextClick = () => {
-        window.scrollTo(0, 0); // Scroll to the top of the page
-    };
 
     return (
         loading ? (
@@ -104,13 +122,9 @@ const ProductScreen = () => {
             <div className="w-full bg-[#F1F5F9]">
                 <Hearder />
                 <div className="w-5/6 mx-auto  mt-[100px] py-[20px]">
-                    <div className="  flex gap-x-[10px]">
-                        <p>Trang chủ</p> /
-                        <p>Thể loại</p> /
-                        <p>Tên sản phẩm</p>
-                    </div>
-                    <div className="w-full  rounded gap-x-[20px] bg-white mt-[10px]  p-[20px]">
-                        <div className="flex gap-7">
+
+                    <div className="w-full  rounded gap-x-[20px] bg-white shadow-lg mt-[10px]  p-[20px]">
+                        <div className="flex ">
 
                             <div className="w-[50%]   rounded-lg flex justify-center items-center">
                                 <img className="w-[50%] object-cover" src={product.images} alt="" />
@@ -139,12 +153,12 @@ const ProductScreen = () => {
                                 
                                 
                                     <li className="flex items-center justify-center">
-                                        <input id="white" type="radio" value="" name="color" checked className="w-4 h-4 " />
-                                        <label for="white" className="ml-2 text-sm f ">White</label>
+                                        <input id="white" type="radio" value="" name="color" checked class="w-4 h-4 " />
+                                        <label for="white" class="ml-2 text-sm f ">White</label>
                                     </li>
                                     <li className="flex gap-x-[5px] items-center justify-center">
-                                        <input id="black" type="radio" value="" name="color" className="w-4 h-4 " />
-                                        <label for="black" className="ml-2 text-sm  ">Black</label>
+                                        <input id="black" type="radio" value="" name="color" class="w-4 h-4 " />
+                                        <label for="black" class="ml-2 text-sm  ">Black</label>
                                     </li>
                                 
                                 </ul>
@@ -155,12 +169,12 @@ const ProductScreen = () => {
                                 
                                 
                                     <li className="flex items-center justify-center">
-                                        <input id="small" type="radio" value="" name="size" checked className="w-4 h-4 " />
-                                        <label for="small" className="ml-2 text-sm f ">Small</label>
+                                        <input id="small" type="radio" value="" name="size" checked class="w-4 h-4 " />
+                                        <label for="small" class="ml-2 text-sm f ">Small</label>
                                     </li>
                                     <li className="flex gap-x-[5px] items-center justify-center">
-                                        <input id="big" type="radio" value="" name="size" className="w-4 h-4 " />
-                                        <label for="big" className="ml-2 text-sm  ">Big</label>
+                                        <input id="big" type="radio" value="" name="size" class="w-4 h-4 " />
+                                        <label for="big" class="ml-2 text-sm  ">Big</label>
                                     </li>
                                 
                                 </ul>
@@ -212,20 +226,20 @@ const ProductScreen = () => {
                                                 </svg>
                                             </div>
                                             <p className="sr-only">{product.rate}</p>
-                                            <p href="#" className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">{product.numberOfReviews} reviews</p>
+                                            <p href="#" className="ml-3 text-sm font-medium text-indigo-600 hover:text-indigo-500">{product.numberOfReviews} Đánh giá</p>
                                         </div>
                                     </div>
 
                                     <div>
-                                        <p className=" text-sm mt-[5px] font-medium">Category: <span className=" text-sm font-medium">{product.category}</span></p>
+                                        <p className=" text-sm mt-[5px] font-medium">Thể loại: <span className=" text-sm font-medium">{product.category}</span></p>
                                     </div>
 
                                     <div>
-                                        <p className=" text-sm mt-[5px] font-medium">Sort by: <span className=" text-sm font-medium">{product.sellerId}</span></p>
+                                        <p className=" text-sm mt-[5px] font-medium">Người bán: <span className="underline cursor-pointer text-sm font-medium">{seller}</span></p>
                                     </div>
 
                                     <div>
-                                        <p className=" text-sm mt-[5px] font-medium">Quantity: <span className=" text-sm font-medium">{product.quantity}</span></p>
+                                        <p className=" text-sm mt-[5px] font-medium">Số lượng: <span className=" text-sm font-medium">{product.quantity}</span></p>
                                     </div>
 
                                     {/* <form className="mt-10">
@@ -286,7 +300,7 @@ const ProductScreen = () => {
 
                                     <SubCate subCategories={subCategories} />
                                     <div>
-                                        <p className="text-3xl mt-[20px] tracking-tight text-gray-900">{formatNumberWithCommas(product.price)}đ</p>
+                                        <p className="text-3xl mt-[20px] tracking-tight text-gray-900">{formatNumberWithCommas(product.price)} VND</p>
 
                                     </div>
                                     <button onClick={addToCartHandler} className="mt-[10px] flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 ">Thêm vào giỏ hàng</button>
@@ -304,11 +318,11 @@ const ProductScreen = () => {
                             </p> */}
                         </div>
 
-                        <Comment comments={comments} />
+                        <Comment data={{ comments, id }} />
                     </div>
                 </div>
 
-                <div onClick={handleNextClick}>
+                <div>
                     <Recommed products={product} />
                 </div>
                 <Footer />

@@ -13,6 +13,7 @@ import {
   importUser,
   deleteLikedProduct,
   getAllUser,
+  getSellerById,
   
 } from '../Controller/UserController.js';
 import { admin, protect } from '../Middleware/Auth.js';
@@ -46,6 +47,8 @@ router.put(
   convertRoleSellerToUser
 );
 router.get('/getAllUser', protect, adminMiddleware, getAllUser);
+router.get('/:id/getSeller', getSellerById);
+
 
 // api notification
 router.get('/getNotifiUnread', protect, sellerMiddleware, getNotifiUnread);

@@ -63,11 +63,11 @@ const SignupScreen = () => {
         address,
         images,})
     return (
-        <div className='w-full mt-[200px]  bg-[#F1F5F9]'>
+        <div className='w-full mt-[100px]  bg-[#F1F5F9]'>
             <Hearder/>
             <ToastContainer position="top-right" limit={1} />
             <div className='w-5/6 mx-auto py-[20px] '>
-                <div className='flex w-11/12 mx-auto bg-white rounded-lg '>
+                <div className='flex w-11/12 mx-auto bg-white shadow-lg rounded-lg '>
                     <div className='w-[50%]  '>
                         <form  className='w-[50%] mx-auto py-[30px]'>
                             <div className='flex flex-col items-center'>
@@ -102,11 +102,11 @@ const SignupScreen = () => {
 
                                 
                                 
-                                <button onClick={submitHandler} className='bg-gray-100 w-full h-[30px] rounded font-medium'>Sign up</button>
+                                <button onClick={submitHandler} className='bg-[#cbf1ff] shadow-lg w-full h-[40px] rounded font-medium'>Sign up</button>
                                 
 
                                 
-                                <button className='flex items-center bg-gray-100 w-full  h-[30px] my-[10px] rounded gap-x-[10px] justify-center'>
+                                {/* <button className='flex items-center bg-gray-100 w-full  h-[30px] my-[10px] rounded gap-x-[10px] justify-center'>
                                 
 
                                         <FaFacebook className='text-blue-400 text-xl'/>
@@ -119,7 +119,7 @@ const SignupScreen = () => {
                                 <button className='flex items-center bg-gray-100 w-full  h-[30px] rounded gap-x-[10px] justify-center'>
                                     <FcGoogle className='text-xl'/>
                                     <p className='font-medium'>Sign in with Google</p>
-                                </button>
+                                </button> */}
                                 
                                 <div className='flex justify-center'>
                                     <p className='font-thin text-black/50'>Do you already have an account? </p>

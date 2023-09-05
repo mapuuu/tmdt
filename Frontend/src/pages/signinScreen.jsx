@@ -46,11 +46,11 @@ const SigninScreen = () => {
     }, [navigate, redirect, userInfo]);
     console.log(userInfo)
     return (
-        <div className='w-full mt-[200px]  bg-[#F1F5F9]'>
+        <div className='w-full mt-[100px]  bg-[#F1F5F9]'>
             <ToastContainer position="top-right" limit={1} />
             <Hearder/>
             <div className='w-5/6 mx-auto py-[20px] '>
-                <div className='flex w-11/12 mx-auto bg-white rounded-lg '>
+                <div className='flex w-11/12 mx-auto bg-white shadow-lg rounded-lg '>
                     <div className='w-[50%]  '>
                         <form onSubmit={submitHandler} className='w-[50%] mx-auto py-[30px]'>
                             <div className='flex flex-col items-center'>
@@ -72,11 +72,11 @@ const SigninScreen = () => {
                                     <p className='font-thin text-black/40 text-sm'>Forgot password?</p>
                                 </div>
                                 
-                                <button className='bg-gray-100 w-full h-[30px] rounded font-medium'>Sign in</button>
+                                <button className='shadow-lg w-full h-[40px] bg-[#cbf1ff] rounded font-medium'>Sign in</button>
                                 
 
                                 
-                                <button className='flex items-center bg-gray-100 w-full  h-[30px] my-[10px] rounded gap-x-[10px] justify-center'>
+                                {/* <button className='flex items-center bg-gray-100 w-full  h-[30px] my-[10px] rounded gap-x-[10px] justify-center'>
                                 
 
                                         <FaFacebook className='text-blue-400 text-xl'/>
@@ -89,7 +89,7 @@ const SigninScreen = () => {
                                 <button className='flex items-center bg-gray-100 w-full  h-[30px] rounded gap-x-[10px] justify-center'>
                                     <FcGoogle className='text-xl'/>
                                     <p className='font-medium'>Sign in with Google</p>
-                                </button>
+                                </button> */}
                                 
                                 <div className='flex justify-center'>
                                     <p className='font-thin text-black/50'>Don’t have an account? <Link className='font-medium text-blue-400 underline' to={`/signup?redirect=${redirect}`}>Sign up</Link></p>

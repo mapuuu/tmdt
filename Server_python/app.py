@@ -8,6 +8,7 @@ from bson import ObjectId, json_util
 from sklearn.metrics.pairwise import cosine_similarity
 import cv2
 import json
+import csv
 app = Flask(__name__)
 
 CORS(app, supports_credentials=True, origins='http://localhost:3000')
@@ -152,6 +153,52 @@ def receive():
         data = request.json.get("obj_id")
         file_data = recommedation_system(data)
         return file_data
+    
+ 
+@app.route('/comment', methods=['POST'])
+def comment():
+    try:
+        image_data = request.files['image']
+        phrase_to_compare = request.form.get('phrase')
+        file_bytes = np.asarray(bytearray(image_data.read()), dtype=np.uint8)
+        image = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+        model = Model()
+        image_data = model.predict_comment(image)
+        
+        file_path = "D:\\Document\\PTIT\\_Test\\filter_images\\comment_toxic.csv"  # Thay "duong_dan_den_file.csv" bằng đường dẫn tới file CSV của bạn
+        column_index_to_compare = 1  # (Đếm từ 0)
+        
+        found_words = find_words_in_column(file_path, column_index_to_compare, phrase_to_compare)
+        
+        response_data = {
+            "result": found_words,
+            "predicted_label": image_data
+        }
+        return jsonify(response_data), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'message': 'Lỗi khi xử lý hình ảnh'}), 500
+    
+def find_words_in_column(file_path, column_index, phrase_to_compare):
+        # Đọc file CSV với encoding 'utf-8'
+        with open(file_path, 'r', encoding='utf-8', errors='ignore') as csv_file:
+            csv_reader = csv.reader(csv_file)
+
+            # Tách cụm từ thành danh sách các từ riêng lẻ
+            words_to_compare = phrase_to_compare.split()
+
+            # Kiểm tra từng từ riêng lẻ có trong cột không
+            found_words = []
+            for row in csv_reader:
+                if len(row) > column_index:
+                    for word in words_to_compare:
+                        if word == row[column_index]:
+                            found_words.append(word)
+
+        if found_words:
+            return "Không hợp lệ!!!"
+        else:
+            return "Hợp lệ!"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

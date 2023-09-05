@@ -50,6 +50,9 @@ const UserSchema = mongoose.Schema({
       ref: 'Product',
     },
   ],
+},
+{
+  timestamps: true,
 });
 
 export default mongoose.model('User', UserSchema);

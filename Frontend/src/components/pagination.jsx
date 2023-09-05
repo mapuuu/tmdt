@@ -2,36 +2,36 @@ import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Pagination = ({ currentPage, totalPages, onPageChange, hasComments, number }) => {
-
+    
     // const location = useLocation();
     // const queryParams = new URLSearchParams(location.search);
 
     // const url = queryParams.get('page') || 1;
 
-
+    
     const pageNumbers = [...Array(totalPages).keys()].map((num) => num + 1);
     // console.log(typeof(pageNumbers));
     const renderPageNumbers = () => {
         if (totalPages <= 4) {
             // Display all page numbers without ellipsis
             return pageNumbers.map((item) => (
-                <li key={item}>
-
+                <li >
+                    
                     <Link to={`?page=${item}`}>
-
+                    
                         <button
                             // className={`pagination-button ${currentPage === item ? 'active bg-green-500' : ''} hover:bg-green-500`}
                             onClick={() => handlePageClick(item)}
                             disabled={totalPages === 1}
 
                         >
-                            <div className={` flex items-center justify-center px-4 h-10 leading-tight ${currentPage === item ? " text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 " : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"}`}>
+                            <div className={` flex items-center justify-center px-4 h-10 leading-tight ${currentPage === item ? " text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 " : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" }`}>
 
                                 {item}
                             </div>
                         </button>
                     </Link>
-
+                    
                 </li>
             ));
         }
@@ -60,12 +60,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange, hasComments, number
                     <span className="ellipsis">...</span>
                 ) : (
                     <Link to={`?page=${item}`}>
-
+                    
                         <button
                             // className={`pagination-button ${currentPage === item ? 'active bg-green-500' : ''} hover:bg-green-500`}
                             onClick={() => handlePageClick(item)}
                         >
-                            <div className={` flex items-center justify-center px-4 h-10 leading-tight ${currentPage === item ? " text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 " : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"}`}>
+                            <div className={` flex items-center justify-center px-4 h-10 leading-tight ${currentPage === item ? " text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 " : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700" }`}>
 
                                 {item}
                             </div>
@@ -120,9 +120,9 @@ const Pagination = ({ currentPage, totalPages, onPageChange, hasComments, number
                             onClick={handlePreviousClick}
                             disabled={currentPage === 1}
                         >
-                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1 1 5l4 4" />
-                            </svg>
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+        </svg>
                         </button>
                     </Link>
                 )}
@@ -136,9 +136,9 @@ const Pagination = ({ currentPage, totalPages, onPageChange, hasComments, number
                             disabled={currentPage === totalPages}
                             onClick={handleNextClick}
                         >
-                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4" />
-                            </svg>
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+        </svg>
                         </button>
                     </Link>
                 )}

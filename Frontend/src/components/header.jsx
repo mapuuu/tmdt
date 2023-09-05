@@ -50,19 +50,19 @@ const Hearder = () => {
                                 <ul className="flex justify-center gap-x-10">
 
                                     <li className="">
-                                        <Link to="/myshop">My Shop</Link>
+                                        <Link className="font-medium" to="/myshop">Cửa hàng của tôi</Link>
                                     </li>
                                     <li className="">
-                                        <Link to="/shopping">Shopping</Link>
+                                        <Link className="font-medium" to="/shopping">Mua sắm</Link>
                                     </li>
                                     {/* <li className="">
                             <a href="/#">Blog</a>
                         </li> */}
-                                    <li className="">
-                                        <Link to="/about" >About Us</Link>
+                                    <li className="font-medium" >
+                                        <Link to="/about" >Thông tin</Link>
                                     </li>
-                                    <li className="">
-                                        <Link to="/contact">Contact</Link>
+                                    <li className="font-medium">
+                                        <Link to="/contact">Liên hệ</Link>
                                     </li>
                                 </ul>
 
@@ -70,16 +70,16 @@ const Hearder = () => {
                                 <ul className="flex justify-center gap-x-10">
 
                                     <li className="">
-                                        <Link to="/shopping">Shopping</Link>
+                                        <Link className="font-medium" to="/shopping">Mua sắm</Link>
                                     </li>
                                     {/* <li className="">
                                     <a href="/#">Blog</a>
                                 </li> */}
                                     <li className="">
-                                        <Link to="/about" >About Us</Link>
+                                        <Link className="font-medium" to="/about" >Thông tin</Link>
                                     </li>
                                     <li className="">
-                                        <Link to="/contact">Contact</Link>
+                                        <Link className="font-medium" to="/contact">Liên hệ</Link>
                                     </li>
                                 </ul>
                             )
@@ -90,9 +90,9 @@ const Hearder = () => {
 
                         <AiFillHeart className="text-xl" />
 
-                        <div className="flex items-center justify-center border bg-orange-400 rounded-full w-[1.5rem] h-[1.5rem] absolute bottom-5 left-6">
+                        {/* <div className="flex items-center justify-center border bg-orange-400 rounded-full w-[1.5rem] h-[1.5rem] absolute bottom-5 left-6">
                             0
-                        </div>
+                        </div> */}
                     </div>
                     <Link to="/cart">
                         <div className="border flex justify-center items-center rounded-full w-[2.5rem] h-[2.5rem] relative">

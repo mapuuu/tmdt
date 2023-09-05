@@ -13,21 +13,21 @@ import { Store } from '../store';
 const Product = (props) => {
     const { product } = props;
 
-    console.log(props)
-
     const { state, dispatch: ctxDispatch } = useContext(Store);
     const {
         cart: { cartItems },
     } = state;
 
     const truncateDescription = (description, maxLength) => {
-        if (description.length > maxLength) {
+        if (description.length >= maxLength) {
             return description.substring(0, maxLength) + '...';
+        } else {
+            return description + '                        '
         }
-        return description;
+
     };
 
-    function formatNumberWithCommas(number) {
+    const formatNumberWithCommas = (number) => {
         return new Intl.NumberFormat('en-US').format(number);
     }
 
@@ -46,132 +46,51 @@ const Product = (props) => {
     };
 
     return (
-        // <div className="w-full">
-        //     <div className="w-5/6 mx-auto mt-8">
-        //         <div className="flex justify-between mt-4">
-        <div className=" bg-white border p-[10px] rounded relative">
-            <Link to={`/product/${product._id}`}>
-                <div className="  flex justify-center items-center  rounded mx-auto object-cover">
-                    <img className=" object-contain h-[300px]" src={product.images} alt="" />
-                </div>
-                <div className="flex  justify-between text-xl font-medium">
-                    <p className="h-14">{truncateDescription(product.name, 46)}</p>
 
-                </div>
 
-                <div className="flex items-center  justify-between  my-[5px]">
-                    <div className="flex items-center ">
-                        <AiFillStar className="text-yellow-300" />
-                        <AiFillStar className="text-yellow-300" />
-                        <AiFillStar className="text-yellow-300" />
-                        <AiFillStar className="text-yellow-300" />
-                        <AiFillStar className="text-yellow-300" />
+        <div className=" bg-white border p-[10px] rounded shadow-lg hover:-translate-y-2 transition-transform duration-300">
+            <div className="  flex justify-center items-center  rounded mx-auto object-cover">
+                <Link to={`/product/${product._id}`}>
+
+                    <div className="  flex justify-center items-center  rounded mx-auto object-cover">
+                        <img className=" object-contain h-[300px]" src={product.images} alt="" />
                     </div>
 
-                    <div className="flex">
-                        <p>Số lượng {product.quantity}</p>
-                    </div>
-                </div>
-                <div className=" items-center ">
-                    {/* <div className="flex items-center">
-                        <p className="font-semibold text-sm line-through">{formatNumberWithCommas(product.price)}</p>
-                        <p className="text-red-500 text-sm">-50%</p>
-                    </div> */}
-                    {/* <p className="font-semibold text-xl text-un">{formatNumberWithCommas(product.price * 50 / 100)}</p> */}
-                    <p className="font-semibold text-xl text-un">{formatNumberWithCommas(product.price)}đ</p>
+
+                    <div className="flex mt-[10px]  justify-between  font-medium">
+                        <p className="h-14">{truncateDescription(product.name, 46)}</p>
+                        {
+                            product.name.length <= 28 && <br />
+                        }
 
 
-                    <div className="flex justify-center items-center border rounded-md p-[5px] mb-[15px]">
-                        {/* <Link to={`/product/${product._id}`}>Buy now</Link> */}
-                        <p>Buy now</p>
                     </div>
 
-                </div>
+                    <div className="flex items-center  justify-between  my-[5px]">
+                        <div className="flex items-center gap-[5px] ">
+                            <p className="font-medium text-sm">{product.rate}</p>
+                            <AiFillStar className="text-yellow-300 " />
 
+                        </div>
 
-            </Link>
+                        <div className="flex gap-[5px]">
+                            <p className="text-sm font-medium">Đã bán</p>
+                            <p className="text-sm font-medium">{product.numberOfReviews}</p>
+                        </div>
+                    </div>
+                    <div className=" items-center ">
+                        {/* <div className="flex items-center gap-[2px]">
+                    <p className="font-semibold text-sm line-through">{formatNumberWithCommas(product.price * 2)}</p>
+                    <p className="text-red-500 text-xs">-50%</p>
+                </div> */}
+                        <p className="font-semibold text-xl text-un">{formatNumberWithCommas(product.price)}</p>
+
+                    </div>
+                </Link>
+            </div>
         </div>
 
-        // {/* <div className="border rounded  w-[280px]">
-        //     <div className="bg-gray-200 w-[250px] h-[250px] rounded mx-auto my-[15px]">
-        //         <img src="" alt="" />
-        //     </div>
-        //     <div className="flex w-[250px] mx-auto justify-between">
-        //         <p>ProductTitle</p>
-        //         <div className="flex items-center gap-x-[4px]">
-        //             <p>5</p>
-        //             <AiFillStar className="text-yellow-300"/>
-        //         </div>
-        //     </div>
 
-        //     <div className="flex items-center w-[250px] justify-between mx-auto my-[5px]">
-        //         <p className="text-xs">Space for a small product description </p>
-        //         <div className="flex">
-        //             <p>1000 </p> solds              
-        //         </div>
-        //     </div>
-        //     <div className="flex items-center w-[250px] mx-auto justify-between">
-        //         <p className="font-semibold text-xl">$100</p>
-        //         <div className="flex justify-center items-center border rounded-md p-[5px] mb-[15px]">
-        //             <p>Buy now</p>
-        //         </div>
-        //     </div>
-        // </div>
-
-        // <div className="border rounded  w-[280px]">
-        //     <div className="bg-gray-200 w-[250px] h-[250px] rounded mx-auto my-[15px]">
-        //         <img src="" alt="" />
-        //     </div>
-        //     <div className="flex w-[250px] mx-auto justify-between">
-        //         <p>ProductTitle</p>
-        //         <div className="flex items-center gap-x-[4px]">
-        //             <p>5</p>
-        //             <AiFillStar className="text-yellow-300"/>
-        //         </div>
-        //     </div>
-
-        //     <div className="flex items-center w-[250px] justify-between mx-auto my-[5px]">
-        //         <p className="text-xs">Space for a small product description </p>
-        //         <div className="flex">
-        //             <p>1000 </p> solds              
-        //         </div>
-        //     </div>
-        //     <div className="flex items-center w-[250px] mx-auto justify-between">
-        //         <p className="font-semibold text-xl">$100</p>
-        //         <div className="flex justify-center items-center border rounded-md p-[5px] mb-[15px]">
-        //             <p>Buy now</p>
-        //         </div>
-        //     </div>
-        // </div>
-
-        // <div className="border rounded  w-[280px]">
-        //     <div className="bg-gray-200 w-[250px] h-[250px] rounded mx-auto my-[15px]">
-        //         <img src="" alt="" />
-        //     </div>
-        //     <div className="flex w-[250px] mx-auto justify-between">
-        //         <p>ProductTitle</p>
-        //         <div className="flex items-center gap-x-[4px]">
-        //             <p>5</p>
-        //             <AiFillStar className="text-yellow-300"/>
-        //         </div>
-        //     </div>
-
-        //     <div className="flex items-center w-[250px] justify-between mx-auto my-[5px]">
-        //         <p className="text-xs">Space for a small product description </p>
-        //         <div className="flex">
-        //             <p>1000 </p> solds              
-        //         </div>
-        //     </div>
-        //     <div className="flex items-center w-[250px] mx-auto justify-between">
-        //         <p className="font-semibold text-xl">$100</p>
-        //         <div className="flex justify-center items-center border rounded-md p-[5px] mb-[15px]">
-        //             <p>Buy now</p>
-        //         </div>
-        //     </div>
-        // </div> */}
-        //         </div>
-        //     </div>
-        // </div>
     )
 }
 export default Product;

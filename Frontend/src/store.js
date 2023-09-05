@@ -16,7 +16,7 @@ const initialState = {
       ? localStorage.getItem('paymentMethod')
       : '',
     cartItems: localStorage.getItem('cartItems')
-      ? JSON.parse(localStorage.getItem('cartItems'))
+      ? JSON.parse(localStorage.getItem('cartItems')).map(item => ({ ...item, isChecked: false }))
       : [],
   },
 };
@@ -26,15 +26,48 @@ const  reducer = (state, action) => {
       // add to cart
       const newItem = action.payload;
       const existItem = state.cart.cartItems.find(
-        (item) => item._id === newItem._id  && item.selectSubCategory === newItem.selectSubCategory
+        (item) => item._id === newItem._id 
       );
       const cartItems = existItem
         ? state.cart.cartItems.map((item) =>
-            item._id === newItem._id && item.selectSubCategory ? newItem : item
+            item._id === existItem._id ? newItem : item
           )
         : [...state.cart.cartItems, newItem];
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
       return { ...state, cart: { ...state.cart, cartItems } };
+
+
+    case 'CART_ITEM_CHECK': {
+      const { productId } = action.payload;
+      const updatedCartItems = state.cart.cartItems.map(item =>
+        item._id === productId ? { ...item, isChecked: !item.isChecked } : item
+      );
+      localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+      return { ...state, cart: { ...state.cart, cartItems: updatedCartItems } };
+    }
+
+    case 'CART_ALLITEMS_CHECK': {
+      const updatedCartItems = state.cart.cartItems.map(item => ({
+        ...item,
+        isChecked: !state.cart.cartItems.every(item => item.isChecked),
+      }));
+      localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+      return { ...state, cart: { ...state.cart, cartItems: updatedCartItems } };
+    }
+    case 'CART_RESET_ITEMS_CHECK':
+      const updatedCartItems = state.cart.cartItems.map(item => ({
+        ...item,
+        isChecked: false}));
+        localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          cartItems: updatedCartItems,
+        },
+      };
+
+
     case 'CART_REMOVE_ITEM': {
       const cartItems = state.cart.cartItems.filter(
         (item) => item._id !== action.payload._id
@@ -43,7 +76,10 @@ const  reducer = (state, action) => {
       return { ...state, cart: { ...state.cart, cartItems } };
     }
     case 'CART_CLEAR':
-      return { ...state, cart: { ...state.cart, cartItems: [] } };
+      // return { ...state, cart: { ...state.cart, cartItems: [] } };
+      const uncheckedCartItems = state.cart.cartItems.filter(item => !item.isChecked);
+      localStorage.setItem('cartItems', JSON.stringify(uncheckedCartItems));
+      return { ...state, cart: { ...state.cart, cartItems: uncheckedCartItems } };
       
     case 'USER_SIGNIN':
       return { ...state, userInfo: action.payload };

@@ -113,8 +113,8 @@ const Products = () => {
         <div className='w-5/6 mx-auto py-[20px] grid grid-cols-5 gap-x-[20px]'>
             
             <SideBar/>
-            <div className='col-span-4 border rounded bg-white  p-[10px]'>
-                <p className='text-2xl font-medium'>Products List</p>
+            <div className='col-span-4 border rounded bg-white  p-[10px] shadow-lg'>
+                <p className='text-2xl font-medium'>Danh sách sản phẩm</p>
                 {
                   loading ? ( 
                     <div className='col-span-4'>
@@ -139,20 +139,20 @@ const Products = () => {
                         <thead>
                           <tr className="bg-gray-300 text-left text-xs font-semibold uppercase tracking-widest ">
                             <th className="px-5 py-3">ID</th>
-                            <th className="px-5 py-3">Product</th>
-                            <th className="px-5 py-3">Seller</th>
-                            <th className="px-5 py-3">Created at</th>
+                            <th className="px-5 py-3">Sản phẩm</th>
+                            <th className="px-5 py-3">Người bán</th>
+                            <th className="px-5 py-3">Ngày tạo</th>
                             <th className="px-5 py-3"></th>
                           </tr>
                         </thead>
                         <tbody className="text-gray-500">
                           {
-                            products.map((product) => (
-                              <tr>
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            products.map((product,index) => (
+                              <tr className={`${index === products.length-1 ? "" : "border-b" }`}>
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <p className="whitespace-no-wrap">{product._id}</p>
                             </td>
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <div className="flex items-center">
                                 <div className="h-10 w-10 flex-shrink-0">
                                   <img className="h-full w-full rounded-full" src={product.images} alt="" />
@@ -162,14 +162,14 @@ const Products = () => {
                                 </div>
                               </div>
                             </td>
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <p className="whitespace-no-wrap">{product.sellerId}</p>
                             </td>
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <p className="whitespace-no-wrap">Sep 28, 2022</p>
                             </td>
 
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <button onClick={() => deleteHandler(product)}>
 
                                 <MdDelete className='text-red-300 text-2xl'/>

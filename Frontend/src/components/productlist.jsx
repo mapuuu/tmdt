@@ -1,21 +1,15 @@
-// ok
-
 import React, { useState } from "react";
 import { useEffect, useReducer } from "react";
 import { BiChevronRight } from "react-icons/bi"
-import { AiFillStar } from "react-icons/ai"
-import { BsFillEyeFill } from "react-icons/bs"
-import { AiFillHeart } from "react-icons/ai"
-import { BiCartAlt } from "react-icons/bi"
-import logger from 'use-reducer-logger';
-import { Link } from "react-router-dom";
 
-// import { product } from "../data/product";
+import logger from 'use-reducer-logger';
+
 import axios from "axios";
 import Product from "./product";
 import LoadingBox from "./LoadingBox";
 import MessageBox from "./MessageBox";
-import Pagination from "./pagination";
+import { Link } from "react-router-dom";
+
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -29,8 +23,6 @@ const reducer = (state, action) => {
             return state;
     }
 };
-
-
 
 const ProductList = () => {
 
@@ -60,18 +52,11 @@ const ProductList = () => {
     }, []);
 
 
-
-
-    console.log(products)
-
-
-
-
     return (
         <div className="w-full bg-[#F1F5F9] mt-[100px]  py-[20px]">
             <div className="w-5/6 mx-auto ">
                 <div className="flex justify-between  items-center ">
-                    <p className="font-semibold">Đề xuất hôm nay</p>
+                    <p className="font-semibold">Đề xuất cho bạn</p>
                     <Link to="/shopping">
                         <div className="flex items-center ">
                             <p className="font-semibold">Xem thêm</p>
@@ -82,12 +67,12 @@ const ProductList = () => {
 
                 <div className="grid grid-cols-5 gap-[20px] mt-[10px]">
                     {loading ? (
-                        <div className='col-span-4'>
+                        <div className='col-span-5'>
 
                             <LoadingBox />
                         </div>
                     ) : error ? (
-                        <div className='col-span-4'>
+                        <div className='col-span-5'>
 
                             <MessageBox variant="danger">{error}</MessageBox>
 

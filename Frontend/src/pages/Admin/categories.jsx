@@ -131,7 +131,9 @@ const Categories = () => {
         // setCategory({})
         toast.success('Category Edit successfully');
         dispatch({ type: 'DELETE_SUCCESS' });
+        
         setCategory({})
+        console.log(category)
       } catch (error) {
         toast.error(getError(error));
         dispatch({
@@ -139,7 +141,7 @@ const Categories = () => {
         });
       }
     };
-  
+  // console.log(category)
   const select = async(category) => {
     setCategory(category)
     setEditTitle(category.title)
@@ -178,13 +180,13 @@ const Categories = () => {
         <div className='w-5/6 mx-auto py-[20px] grid grid-cols-5 gap-x-[20px]'>
             
             <SideBar/>
-            <div className='col-span-4 border rounded bg-white  p-[10px]'>
+            <div className='col-span-4 border rounded bg-white  p-[10px] shadow-lg'>
                 <div className='flex justify-between items-center'>
 
-                    <p className='text-2xl font-medium'>Categories List</p>
-                    <div onClick={() => {setShowModal(true); setName('Create Category')}} className=' bg-red-200 cursor-pointer flex items-center rounded gap-x-[5px] px-[10px] py-[5px]'>
+                    <p className='text-2xl font-medium'>Danh sách thể loại</p>
+                    <div onClick={() => {setShowModal(true); setName('Tạo thể loại')}} className=' bg-[#cbf1ff] shadow-lg cursor-pointer flex items-center rounded gap-x-[5px] px-[10px] py-[5px]'>
                         <BiPlusCircle className='text-xl'/>
-                        <p className='text-xl font-medium'>Create</p>
+                        <p className='text-xl font-medium'>Tạo mới</p>
                     </div>
                 </div>
                 {
@@ -211,20 +213,20 @@ const Categories = () => {
                         <thead>
                           <tr className="bg-gray-300 text-left text-xs font-semibold uppercase tracking-widest ">
                             <th className="px-5 py-3">ID</th>
-                            <th className="px-5 py-3">Name</th>
+                            <th className="px-5 py-3">Tên thể loại</th>
                             {/* <th className="px-5 py-3">Seller</th> */}
-                            <th className="px-5 py-3">Created at</th>
+                            <th className="px-5 py-3">Ngày tạo</th>
                             <th className="px-5 py-3"></th>
                           </tr>
                         </thead>
                         <tbody className="text-gray-500">
                           {
-                            categories.map((category) => (
-                              <tr>
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            categories.map((category,index) => (
+                              <tr className={`${index === categories.length-1 ? "" : "border-b" }`}>
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <p className="whitespace-no-wrap">{category._id}</p>
                             </td>
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <div className="flex items-center">
                                 {/* <div className="h-10 w-10 flex-shrink-0">
                                   <img className="h-full w-full rounded-full" src={product.images} alt="" />
@@ -234,13 +236,13 @@ const Categories = () => {
                                 </div>
                               </div>
                             </td>
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <p className="whitespace-no-wrap">{moment(category.createdAt).format('DD/MM/YYYY')}</p>
                             </td>
                             
 
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <button onClick={() => {setShowModal(true); setName('Edit Category'); select(category)}}>
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
+                                <button onClick={() => {setShowModal(true); setName('Chỉnh sửa thể loại'); select(category)}}>
 
                                 <BiEdit className=' text-2xl'/>
                               </button>
@@ -273,18 +275,18 @@ const Categories = () => {
           showModal && (
 
         <div onClick={()=> {setShowModal(false); setName("")}} className='fixed z-10 top-0 right-0 bottom-0 left-0 bg-gray-300/50 '>
-          <div onClick={stopPropagation} className='fixed flex flex-col justify-center items-center gap-[10px] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] bg-white rounded px-[50px] py-[20px]'>
+          <div onClick={stopPropagation} className='fixed flex flex-col justify-center items-center gap-[10px] top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] bg-white  rounded px-[50px] py-[20px]'>
             <p className='font-medium text-xl'>{name}</p>
             {
-              name === "Create Category" ? (
+              name === "Tạo thể loại" ? (
                 <div className='flex flex-col justify-center items-center gap-[20px]'>
 
                   <div>
                     <input onChange={(e) => setTitle(e.target.value)} className='p-[10px] outline-none border rounded' placeholder='Category Name' type="text" />
                   </div>
                   <div>
-                    <button onClick={() => {createCategory(); setShowModal(false);}} className='bg-red-300 rounded px-[20px] py-[10px]'>
-                      Complete
+                    <button onClick={() => {createCategory(); setShowModal(false);}} className='bg-[#cbf1ff] shadow-lg rounded px-[20px] py-[10px]'>
+                      Hoàn tất
                     </button>
                   </div>
                 </div>
@@ -294,8 +296,8 @@ const Categories = () => {
                     <input onChange={(e) => setEditTitle(e.target.value)} value={editTitle} className='p-[10px] outline-none border rounded' placeholder='Category Name' type="text" />
                   </div>
                   <div>
-                    <button  onClick={() => {editCategory(category); setShowModal(false)}}  className='bg-red-300 rounded px-[20px] py-[10px]'>
-                      Complete
+                    <button  onClick={() => {editCategory(category); setShowModal(false)}}  className='bg-[#cbf1ff] shadow-lg rounded px-[20px] py-[10px]'>
+                      Hoàn tất
                     </button>
                   </div>
                 

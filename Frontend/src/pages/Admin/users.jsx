@@ -116,8 +116,8 @@ const Users = () => {
         <div className='w-5/6 mx-auto py-[20px] grid grid-cols-5 gap-x-[20px]'>
             
             <SideBar/>
-            <div className='col-span-4 border rounded bg-white  p-[10px]'>
-                <p className='text-2xl font-medium'>Users List</p>
+            <div className='col-span-4 border rounded bg-white  p-[10px] shadow-lg'>
+                <p className='text-2xl font-medium'>Danh sách người dùng</p>
                 {
                   loading ? ( 
                     <LoadingBox />
@@ -135,20 +135,20 @@ const Users = () => {
                         <thead>
                           <tr className="bg-gray-300 text-left text-xs font-semibold uppercase tracking-widest ">
                             <th className="px-5 py-3">ID</th>
-                            <th className="px-5 py-3">Full Name</th>
-                            <th className="px-5 py-3">User Role</th>
-                            <th className="px-5 py-3">Created at</th>
+                            <th className="px-5 py-3">Họ tên</th>
+                            <th className="px-5 py-3">Chức vụ</th>
+                            <th className="px-5 py-3">Ngày tạo</th>
                             <th className="px-5 py-3"></th>
                           </tr>
                         </thead>
                         <tbody className="text-gray-500">
                           {
-                            users.map((user) => (
-                              <tr>
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            users.map((user,index) => (
+                              <tr className={`${index === users.length-1 ? "" : "border-b" }`}>
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <p className="whitespace-no-wrap">{user._id}</p>
                             </td>
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <div className="flex items-center">
                                 <div className="h-10 w-10 flex-shrink-0">
                                   <img className="h-full w-full rounded-full" src={user.images} alt="" />
@@ -158,14 +158,14 @@ const Users = () => {
                                 </div>
                               </div>
                             </td>
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <p className="whitespace-no-wrap">{user.role}</p>
                             </td>
-                            <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td className=" border-gray-200 bg-white px-5 py-5 text-sm">
                               <p className="whitespace-no-wrap">Sep 28, 2022</p>
                             </td>
 
-                            <td className="border-b flex gap-x-[5px] border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td className=" flex gap-x-[5px] border-gray-200 bg-white px-5 py-5 text-sm">
                               <button>
 
                                 <BiEdit className=' text-2xl'/>
